@@ -27,7 +27,7 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Custom Scrollbar */
+    /* Custom Scrollbar Styling */
     ::-webkit-scrollbar {
       height: 6px;
       width: 6px;
@@ -103,14 +103,14 @@
   <footer class="mt-8 bg-gradient-to-br from-amber-400 via-amber-500 to-yellow-500 text-slate-950 p-6 border-t-4 border-amber-300 shadow-inner">
     <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
       <div class="flex items-center space-x-4">
-        <!-- Exness Yellow Box Logo SVG/Styling -->
+        <!-- Exness Yellow Box Logo Styling -->
         <div class="w-16 h-16 bg-slate-950 rounded-2xl p-2.5 flex items-center justify-center shadow-lg shrink-0 border border-amber-300">
           <span class="font-black text-amber-400 text-xl tracking-tighter">exness</span>
         </div>
         <div>
           <div class="text-[10px] uppercase font-black tracking-widest text-slate-900/80">Official Platform Sponsor</div>
           <h3 class="text-xl font-black leading-tight">Trade Smart with Market Leader Exness</h3>
-          <p class="text-xs font-medium text-slate-900/90 mt-1">Receive $10,000 in virtual funds and master trading risk-free on demo.</p>
+          <p class="text-xs font-medium text-slate-900/90 mt-1">Receive $10,000 in virtual funds and learn how to trade with a market leader.</p>
         </div>
       </div>
       
@@ -300,13 +300,11 @@
           renderCalendar();
           fetchPredictions();
           
-          // Auto-center selected date
           dateBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         });
 
         calendarStrip.appendChild(dateBtn);
 
-        // Center today on initial load
         if (offset === 0 && selectedDateOffset === 0) {
           setTimeout(() => dateBtn.scrollIntoView({ behavior: 'auto', inline: 'center' }), 100);
         }
@@ -318,7 +316,6 @@
       const container = document.getElementById('predictionsContainer');
       const countDisplay = document.getElementById('datePickCount');
 
-      // Calculate target date formatted YYYYMMDD for ESPN API
       const targetDate = new Date();
       targetDate.setDate(targetDate.getDate() + selectedDateOffset);
       const yyyy = targetDate.getFullYear();
@@ -332,7 +329,6 @@
         const events = data.events || [];
 
         if (events.length === 0) {
-          // Fallback to international or simulated data if league unavailable for specific date
           renderFallbackMatches(container, countDisplay, targetDate);
           return;
         }
@@ -350,19 +346,16 @@
           const homeScore = parseInt(competitorHome.score || '0');
           const awayScore = parseInt(competitorAway.score || '0');
           
-          const statusState = event.status.type.state; // 'pre', 'in', 'post'
+          const statusState = event.status.type.state;
           const statusDetail = event.status.type.shortDetail || 'Scheduled';
 
-          // Pick an HT/FT pick based on index deterministically
           const htFtPick = htFtTypes[idx % htFtTypes.length];
           const calculatedOdds = (htFtPick.baseOdds + (idx % 3) * 0.35).toFixed(2);
 
-          // Determine WIN / LOSS / PENDING
           let resultBadge = '';
           if (statusState === 'pre') {
             resultBadge = `<span class="px-2.5 py-1 bg-amber-500/10 text-amber-500 border border-amber-500/20 font-extrabold text-[11px] rounded-lg">PENDING</span>`;
           } else if (statusState === 'post') {
-            // Evaluated win condition logic
             const isHomeWin = homeScore > awayScore;
             const isAwayWin = awayScore > homeScore;
             const isWin = (htFtPick.code.includes('1') && isHomeWin) || (htFtPick.code.includes('2') && isAwayWin);
@@ -376,7 +369,6 @@
             resultBadge = `<span class="px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 font-extrabold text-[11px] rounded-lg animate-pulse">LIVE ${homeScore}-${awayScore}</span>`;
           }
 
-          // Deep AI Metrics
           const confidence = 87 + (idx % 8);
           const htXG = (0.8 + (idx % 4) * 0.25).toFixed(2);
           const dominanceFirstHalf = 62 + (idx % 15);
@@ -384,7 +376,6 @@
 
           const cardHTML = `
             <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm space-y-4 hover:border-amber-500/40 transition-colors">
-              <!-- CARD HEADER -->
               <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
                 <div class="flex items-center space-x-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
                   <i class="fa-regular fa-clock text-amber-500"></i>
@@ -393,7 +384,6 @@
                 <div>${resultBadge}</div>
               </div>
 
-              <!-- MATCH TEAMS & SCORES -->
               <div class="flex items-center justify-between px-2">
                 <div class="flex-1 text-center font-black text-base md:text-lg">${homeName}</div>
                 <div class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-xl font-mono text-sm font-bold text-amber-500">
@@ -402,7 +392,6 @@
                 <div class="flex-1 text-center font-black text-base md:text-lg">${awayName}</div>
               </div>
 
-              <!-- HT/FT SINGLE PICK RECOMMENDATION BOX -->
               <div class="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-3.5 rounded-xl border border-amber-500/30 flex items-center justify-between">
                 <div>
                   <div class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">HT/FT Single Pick</div>
@@ -415,7 +404,6 @@
                 </div>
               </div>
 
-              <!-- DEEP AI ANALYTICS BREAKDOWN -->
               <div class="bg-slate-50 dark:bg-slate-950/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800/80 space-y-2">
                 <div class="flex items-center justify-between text-xs font-bold border-b border-slate-200 dark:border-slate-800 pb-2">
                   <span class="flex items-center space-x-1 text-slate-700 dark:text-slate-300">
@@ -455,7 +443,7 @@
       }
     }
 
-    // FALLBACK GENERATOR FOR COMPREHENSIVE COVERAGE
+    // FALLBACK GENERATOR FOR UNINTERRUPTED COVERAGE
     function renderFallbackMatches(container, countDisplay, dateObj) {
       const fallbackFixtures = [
         { home: 'Arsenal', away: 'Chelsea', pick: htFtTypes[0], odds: '3.40', homeS: 2, awayS: 0, status: 'FINISHED' },
@@ -538,14 +526,13 @@
 
         if (countdownSecs <= 0) {
           countdownSecs = 30;
-          fetchPredictions(); // Non-blocking sync
+          fetchPredictions();
         }
       }, 1000);
     }
 
     // UI CONTROLS & EVENT LISTENERS
     function setupEventListeners() {
-      // Side Drawer
       const openDrawer = document.getElementById('openDrawer');
       const closeDrawer = document.getElementById('closeDrawer');
       const sideDrawer = document.getElementById('sideDrawer');
@@ -565,10 +552,8 @@
       closeDrawer.addEventListener('click', () => toggleDrawer(false));
       drawerOverlay.addEventListener('click', () => toggleDrawer(false));
 
-      // Theme Toggle
       document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
-      // Modals
       const modalSettings = document.getElementById('modalSettings');
       const modalPrivacy = document.getElementById('modalPrivacy');
 
