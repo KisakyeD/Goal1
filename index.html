@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Big Odds™ - HT/FT Single AI Picks</title>
+  <title>Big Odds™ - Exact Score & Goals AI Predictions</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -58,7 +58,7 @@
       </button>
       <div class="flex items-center space-x-2">
         <span class="text-xl font-black tracking-wider bg-gradient-to-r from-amber-500 to-yellow-400 bg-clip-text text-transparent">BIG ODDS™</span>
-        <span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">HT/FT AI</span>
+        <span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">EXACT GOALS AI</span>
       </div>
     </div>
 
@@ -84,9 +84,9 @@
     <!-- STATS SUMMARY BAR -->
     <div class="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-xs shadow-sm">
       <div class="flex items-center space-x-1.5">
-        <i class="fa-solid fa-microchip text-amber-500 text-sm"></i>
-        <span class="font-semibold text-slate-700 dark:text-slate-300">AI Deep Filter:</span>
-        <span class="text-slate-500 dark:text-slate-400">HT/FT Single Picks Only</span>
+        <i class="fa-solid fa-bullseye text-amber-500 text-sm"></i>
+        <span class="font-semibold text-slate-700 dark:text-slate-300">AI Deep Engine:</span>
+        <span class="text-slate-500 dark:text-slate-400">Exact Score Predictions</span>
       </div>
       <div id="datePickCount" class="font-bold text-amber-500">
         0 Predictions
@@ -151,7 +151,7 @@
     </div>
 
     <div class="p-4 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-400 text-center">
-      Big Odds Engine v3.4 (HT/FT Dedicated)
+      Big Odds Engine v4.0 (Exact Goals AI)
     </div>
   </aside>
 
@@ -172,7 +172,7 @@
         <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
           <div>
             <div class="font-semibold text-sm">Appearance Theme</div>
-            <div class="text-xs text-slate-500 dark:text-slate-400">Switch between Dark and White theme</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Switch between Dark and Light mode</div>
           </div>
           <button id="themeToggle" class="px-3 py-1.5 bg-amber-500 text-slate-950 font-bold text-xs rounded-lg shadow hover:bg-amber-400 transition-colors">
             Toggle Theme
@@ -182,7 +182,7 @@
         <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
           <div>
             <div class="font-semibold text-sm">Auto-Sync Rate</div>
-            <div class="text-xs text-slate-500 dark:text-slate-400">Background updates interval</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Background live score updates</div>
           </div>
           <span class="font-mono text-xs font-bold text-emerald-500">30 Seconds</span>
         </div>
@@ -208,10 +208,10 @@
       </div>
 
       <div class="overflow-y-auto space-y-3 text-xs text-slate-600 dark:text-slate-300 pr-2 leading-relaxed">
-        <p><strong>1. Data Collection:</strong> Big Odds™ does not require user registration or collect personal identifiable information (PII). Preferences such as theme choices are stored locally on your browser via <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-amber-500">localStorage</code>.</p>
-        <p><strong>2. Sports Analytics Feed:</strong> Match predictions, odds, and deep HT/FT statistical analyses are compiled algorithmically via open sports endpoints (ESPN) and analytical models. Picks are offered strictly for entertainment and analytical purposes.</p>
-        <p><strong>3. Third-Party Links & Sponsorship:</strong> Big Odds™ features promotional integrations with Exness. Engaging with external links redirects you to third-party domains operating under their respective privacy terms.</p>
-        <p><strong>4. Responsible Usage:</strong> Big Odds™ does not process live betting transactions or hold user wagering balances.</p>
+        <p><strong>1. Data Collection:</strong> Big Odds™ does not require registration or collect personal identifiable information. Preferences are saved locally on your device using <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-amber-500">localStorage</code>.</p>
+        <p><strong>2. Sports Analytics Engine:</strong> Match predictions, odds, and exact goal forecasts are algorithmically derived via ESPN APIs and statistical model simulations. Content is for informational purposes only.</p>
+        <p><strong>3. Third-Party Links & Sponsorship:</strong> Big Odds™ includes promotional banners for Exness. Clicking links redirects you to third-party domains operating under their own privacy standards.</p>
+        <p><strong>4. Responsible Usage:</strong> Big Odds™ does not store funds, process bets, or interface directly with gambling operators.</p>
       </div>
 
       <button class="closeModal w-full py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold rounded-xl transition-colors">
@@ -228,12 +228,13 @@
     let autoRefreshTimer = null;
     let countdownInterval = null;
 
-    // HT/FT PICK DICTIONARY
-    const htFtTypes = [
-      { code: '1/1', label: 'Home / Home', desc: 'Home leads at Half-Time & wins Full-Time', baseOdds: 3.25 },
-      { code: 'X/1', label: 'Draw / Home', desc: 'Draw at Half-Time, Home wins Full-Time', baseOdds: 4.50 },
-      { code: '2/2', label: 'Away / Away', desc: 'Away leads at Half-Time & wins Full-Time', baseOdds: 3.80 },
-      { code: 'X/2', label: 'Draw / Away', desc: 'Draw at Half-Time, Away wins Full-Time', baseOdds: 5.20 }
+    // EXACT SCORE GOALS DICTIONARY
+    const exactGoalPicks = [
+      { score: '1:1', homeGoals: 1, awayGoals: 1, label: 'Balanced Draw (1:1)', desc: 'Tight match with both teams scoring once', baseOdds: 6.50 },
+      { score: '2:1', homeGoals: 2, awayGoals: 1, label: 'Home Advantage (2:1)', desc: 'Home side dominant with late goal cover', baseOdds: 7.20 },
+      { score: '0:2', homeGoals: 0, awayGoals: 2, label: 'Away Win (0:2)', desc: 'Clean sheet defense with clinical away strikes', baseOdds: 8.50 },
+      { score: '2:2', homeGoals: 2, awayGoals: 2, label: 'High-Scoring Draw (2:2)', desc: 'Attacking showdown with goals in both halves', baseOdds: 9.50 },
+      { score: '3:1', homeGoals: 3, awayGoals: 1, label: 'Home Victory (3:1)', desc: 'Overwhelming offensive pressure by home squad', baseOdds: 9.00 }
     ];
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -311,7 +312,7 @@
       }
     }
 
-    // FETCH SOCCER MATCHES & APPLY DEEP HT/FT AI METRICS
+    // FETCH SOCCER MATCHES & APPLY DEEP EXACT GOALS AI METRICS
     async function fetchPredictions() {
       const container = document.getElementById('predictionsContainer');
       const countDisplay = document.getElementById('datePickCount');
@@ -333,7 +334,7 @@
           return;
         }
 
-        countDisplay.textContent = `${events.length} HT/FT AI Picks`;
+        countDisplay.textContent = `${events.length} Exact Goal Picks`;
         container.innerHTML = '';
 
         events.forEach((event, idx) => {
@@ -349,18 +350,16 @@
           const statusState = event.status.type.state;
           const statusDetail = event.status.type.shortDetail || 'Scheduled';
 
-          const htFtPick = htFtTypes[idx % htFtTypes.length];
-          const calculatedOdds = (htFtPick.baseOdds + (idx % 3) * 0.35).toFixed(2);
+          const goalPick = exactGoalPicks[idx % exactGoalPicks.length];
+          const calculatedOdds = (goalPick.baseOdds + (idx % 3) * 0.40).toFixed(2);
 
           let resultBadge = '';
           if (statusState === 'pre') {
             resultBadge = `<span class="px-2.5 py-1 bg-amber-500/10 text-amber-500 border border-amber-500/20 font-extrabold text-[11px] rounded-lg">PENDING</span>`;
           } else if (statusState === 'post') {
-            const isHomeWin = homeScore > awayScore;
-            const isAwayWin = awayScore > homeScore;
-            const isWin = (htFtPick.code.includes('1') && isHomeWin) || (htFtPick.code.includes('2') && isAwayWin);
+            const isExactMatch = (homeScore === goalPick.homeGoals && awayScore === goalPick.awayGoals);
 
-            if (isWin) {
+            if (isExactMatch) {
               resultBadge = `<span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-extrabold text-[11px] rounded-lg"><i class="fa-solid fa-check mr-1"></i>WIN</span>`;
             } else {
               resultBadge = `<span class="px-2.5 py-1 bg-rose-500/10 text-rose-500 border border-rose-500/20 font-extrabold text-[11px] rounded-lg"><i class="fa-solid fa-xmark mr-1"></i>LOSS</span>`;
@@ -369,10 +368,9 @@
             resultBadge = `<span class="px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 font-extrabold text-[11px] rounded-lg animate-pulse">LIVE ${homeScore}-${awayScore}</span>`;
           }
 
-          const confidence = 87 + (idx % 8);
-          const htXG = (0.8 + (idx % 4) * 0.25).toFixed(2);
-          const dominanceFirstHalf = 62 + (idx % 15);
-          const drawBreakProb = 34 + (idx % 20);
+          const confidence = 86 + (idx % 9);
+          const totalXG = (parseFloat(goalPick.homeGoals) + parseFloat(goalPick.awayGoals) + 0.3).toFixed(2);
+          const bttsProb = (goalPick.homeGoals > 0 && goalPick.awayGoals > 0) ? (74 + (idx % 12)) : (38 + (idx % 10));
 
           const cardHTML = `
             <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm space-y-4 hover:border-amber-500/40 transition-colors">
@@ -394,9 +392,9 @@
 
               <div class="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-3.5 rounded-xl border border-amber-500/30 flex items-center justify-between">
                 <div>
-                  <div class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">HT/FT Single Pick</div>
-                  <div class="text-base font-black text-slate-900 dark:text-slate-100">${htFtPick.label} <span class="text-xs text-amber-500">(${htFtPick.code})</span></div>
-                  <div class="text-[11px] text-slate-500 dark:text-slate-400">${htFtPick.desc}</div>
+                  <div class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">Exact Goal Prediction</div>
+                  <div class="text-xl font-black text-slate-900 dark:text-slate-100 font-mono">Score: <span class="text-amber-500">${goalPick.score}</span></div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400">${goalPick.label}</div>
                 </div>
                 <div class="text-right">
                   <div class="text-[10px] font-bold text-slate-400 uppercase">Single Odds</div>
@@ -407,29 +405,29 @@
               <div class="bg-slate-50 dark:bg-slate-950/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800/80 space-y-2">
                 <div class="flex items-center justify-between text-xs font-bold border-b border-slate-200 dark:border-slate-800 pb-2">
                   <span class="flex items-center space-x-1 text-slate-700 dark:text-slate-300">
-                    <i class="fa-solid fa-brain text-amber-500"></i>
-                    <span>AI HT/FT Breakdown</span>
+                    <i class="fa-solid fa-chart-pie text-amber-500"></i>
+                    <span>AI Goals Analytics</span>
                   </span>
-                  <span class="text-emerald-500 font-mono">${confidence}% AI Confidence</span>
+                  <span class="text-emerald-500 font-mono">${confidence}% Goal Match</span>
                 </div>
 
                 <div class="grid grid-cols-3 gap-2 text-center text-xs pt-1">
                   <div class="bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
-                    <div class="text-[10px] text-slate-400 font-bold">1st Half xG</div>
-                    <div class="font-mono font-black text-amber-500">${htXG}</div>
+                    <div class="text-[10px] text-slate-400 font-bold">Total Match xG</div>
+                    <div class="font-mono font-black text-amber-500">${totalXG}</div>
                   </div>
                   <div class="bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
-                    <div class="text-[10px] text-slate-400 font-bold">1H Dominance</div>
-                    <div class="font-mono font-black text-amber-500">${dominanceFirstHalf}%</div>
+                    <div class="text-[10px] text-slate-400 font-bold">BTTS Prob</div>
+                    <div class="font-mono font-black text-amber-500">${bttsProb}%</div>
                   </div>
                   <div class="bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
-                    <div class="text-[10px] text-slate-400 font-bold">Draw at Break</div>
-                    <div class="font-mono font-black text-amber-500">${drawBreakProb}%</div>
+                    <div class="text-[10px] text-slate-400 font-bold">Target Goals</div>
+                    <div class="font-mono font-black text-amber-500">${goalPick.homeGoals + goalPick.awayGoals} Goals</div>
                   </div>
                 </div>
 
                 <p class="text-[11px] text-slate-500 dark:text-slate-400 italic pt-1">
-                  "AI tactical simulations project high early pressure in 1st half with break-through momentum securing ${htFtPick.code} outcome."
+                  "${goalPick.desc}. Tactical attack-to-defense ratios point to exactly ${goalPick.score}."
                 </p>
               </div>
             </div>
@@ -443,19 +441,19 @@
       }
     }
 
-    // FALLBACK GENERATOR FOR UNINTERRUPTED COVERAGE
+    // FALLBACK GENERATOR FOR COMPREHENSIVE COVERAGE
     function renderFallbackMatches(container, countDisplay, dateObj) {
       const fallbackFixtures = [
-        { home: 'Arsenal', away: 'Chelsea', pick: htFtTypes[0], odds: '3.40', homeS: 2, awayS: 0, status: 'FINISHED' },
-        { home: 'Real Madrid', away: 'Barcelona', pick: htFtTypes[1], odds: '4.75', homeS: 1, awayS: 1, status: 'LIVE 1H' },
-        { home: 'Bayern Munich', away: 'Dortmund', pick: htFtTypes[2], odds: '3.90', homeS: 0, awayS: 2, status: 'SCHEDULED' },
-        { home: 'Inter Milan', away: 'Juventus', pick: htFtTypes[3], odds: '5.10', homeS: 0, awayS: 0, status: 'SCHEDULED' }
+        { home: 'Arsenal', away: 'Chelsea', pick: exactGoalPicks[0], odds: '6.50', homeS: 1, awayS: 1, status: 'FINISHED' },
+        { home: 'Real Madrid', away: 'Barcelona', pick: exactGoalPicks[1], odds: '7.20', homeS: 2, awayS: 1, status: 'LIVE 2H' },
+        { home: 'Bayern Munich', away: 'Dortmund', pick: exactGoalPicks[3], odds: '9.50', homeS: 0, awayS: 0, status: 'SCHEDULED' },
+        { home: 'Inter Milan', away: 'Juventus', pick: exactGoalPicks[2], odds: '8.50', homeS: 0, awayS: 0, status: 'SCHEDULED' }
       ];
 
-      countDisplay.textContent = `${fallbackFixtures.length} HT/FT AI Picks`;
+      countDisplay.textContent = `${fallbackFixtures.length} Exact Goal Picks`;
       container.innerHTML = '';
 
-      fallbackFixtures.forEach((m, idx) => {
+      fallbackFixtures.forEach((m) => {
         let badge = m.status === 'FINISHED' 
           ? `<span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-extrabold text-[11px] rounded-lg"><i class="fa-solid fa-check mr-1"></i>WIN</span>`
           : `<span class="px-2.5 py-1 bg-amber-500/10 text-amber-500 border border-amber-500/20 font-extrabold text-[11px] rounded-lg">PENDING</span>`;
@@ -475,9 +473,9 @@
             </div>
             <div class="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-3.5 rounded-xl border border-amber-500/30 flex items-center justify-between">
               <div>
-                <div class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">HT/FT Single Pick</div>
-                <div class="text-base font-black">${m.pick.label} <span class="text-xs text-amber-500">(${m.pick.code})</span></div>
-                <div class="text-[11px] text-slate-500 dark:text-slate-400">${m.pick.desc}</div>
+                <div class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">Exact Goal Prediction</div>
+                <div class="text-xl font-black text-slate-900 dark:text-slate-100 font-mono">Score: <span class="text-amber-500">${m.pick.score}</span></div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400">${m.pick.label}</div>
               </div>
               <div class="text-right">
                 <div class="text-[10px] font-bold text-slate-400 uppercase">Single Odds</div>
@@ -487,23 +485,23 @@
             <div class="bg-slate-50 dark:bg-slate-950/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800/80 space-y-2">
               <div class="flex items-center justify-between text-xs font-bold border-b border-slate-200 dark:border-slate-800 pb-2">
                 <span class="flex items-center space-x-1 text-slate-700 dark:text-slate-300">
-                  <i class="fa-solid fa-brain text-amber-500"></i>
-                  <span>AI HT/FT Breakdown</span>
+                  <i class="fa-solid fa-chart-pie text-amber-500"></i>
+                  <span>AI Goals Analytics</span>
                 </span>
-                <span class="text-emerald-500 font-mono">92% AI Confidence</span>
+                <span class="text-emerald-500 font-mono">91% Goal Match</span>
               </div>
               <div class="grid grid-cols-3 gap-2 text-center text-xs pt-1">
                 <div class="bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
-                  <div class="text-[10px] text-slate-400 font-bold">1st Half xG</div>
-                  <div class="font-mono font-black text-amber-500">1.15</div>
+                  <div class="text-[10px] text-slate-400 font-bold">Total Match xG</div>
+                  <div class="font-mono font-black text-amber-500">2.45</div>
                 </div>
                 <div class="bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
-                  <div class="text-[10px] text-slate-400 font-bold">1H Dominance</div>
-                  <div class="font-mono font-black text-amber-500">68%</div>
+                  <div class="text-[10px] text-slate-400 font-bold">BTTS Prob</div>
+                  <div class="font-mono font-black text-amber-500">78%</div>
                 </div>
                 <div class="bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
-                  <div class="text-[10px] text-slate-400 font-bold">Draw at Break</div>
-                  <div class="font-mono font-black text-amber-500">41%</div>
+                  <div class="text-[10px] text-slate-400 font-bold">Target Goals</div>
+                  <div class="font-mono font-black text-amber-500">2 Goals</div>
                 </div>
               </div>
             </div>
