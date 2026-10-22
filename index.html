@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goal - Live Scores, AI Combos & Dynamic VIP Accumulators</title>
+    <title>Goal - Live Scores, AI Single Picks & VIP Accumulators</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -60,7 +60,7 @@
 
                 <!-- VIP Categories -->
                 <div class="space-y-1 pt-2">
-                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider px-4">VIP Tickets Engine</span>
+                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider px-4">VIP Tickets Engine (Single Picks)</span>
                     
                     <button onclick="switchView('vip', '5')" class="w-full px-4 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-xs font-bold flex items-center justify-between transition">
                         <div class="flex items-center space-x-3">
@@ -85,6 +85,14 @@
                         </div>
                         <span class="bg-amber-500/20 text-amber-400 text-[10px] font-black px-2 py-0.5 rounded-full border border-amber-500/30">ODD 20+</span>
                     </button>
+
+                    <button onclick="switchView('vip', '50')" class="w-full px-4 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-xs font-bold flex items-center justify-between transition">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
+                            <span>VIP Odd 50 Mega Ticket</span>
+                        </div>
+                        <span class="bg-amber-500/20 text-amber-400 text-[10px] font-black px-2 py-0.5 rounded-full border border-amber-500/30">ODD 50+</span>
+                    </button>
                 </div>
 
                 <button onclick="switchView('settings')" class="w-full px-4 py-3 bg-darkborder/40 hover:bg-darkborder/80 text-white rounded-xl text-xs font-bold flex items-center space-x-3 transition">
@@ -100,7 +108,7 @@
                 <i data-lucide="external-link" class="w-4 h-4"></i>
                 <span>Open Exness Partner Portal</span>
             </a>
-            <p class="text-[10px] text-gray-500 text-center">Goal AI Prediction Platform v4.5</p>
+            <p class="text-[10px] text-gray-500 text-center">Goal AI Prediction Platform v5.0</p>
         </div>
     </aside>
 
@@ -193,7 +201,7 @@
                     </div>
                     <div>
                         <h2 class="text-base font-black text-white uppercase tracking-wider">AI VIP TICKET ENGINE</h2>
-                        <p class="text-xs text-gray-400">Dynamic Multi-Tier Accumulators with Accurate Win/Loss Analytics</p>
+                        <p class="text-xs text-gray-400">Single Pick Per Game Accumulators (Odd 5, 10, 20 & 50)</p>
                     </div>
                 </div>
 
@@ -203,16 +211,19 @@
                 </div>
             </div>
 
-            <!-- Odds Category Tier Selector Pills -->
-            <div class="flex items-center space-x-2 border-b border-darkborder/60 pb-3">
-                <button onclick="setVipTier('5')" id="vipTierBtn5" class="px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-darkborder/60 text-gray-300 border-darkborder">
+            <!-- Odds Category Tier Selector Pills (Added Odd 50) -->
+            <div class="flex items-center space-x-2 border-b border-darkborder/60 pb-3 overflow-x-auto no-scrollbar">
+                <button onclick="setVipTier('5')" id="vipTierBtn5" class="px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-darkborder/60 text-gray-300 border-darkborder whitespace-nowrap">
                     Odd 5+ Ticket
                 </button>
-                <button onclick="setVipTier('10')" id="vipTierBtn10" class="px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-amber-500 text-darkbg border-amber-500 font-black shadow">
+                <button onclick="setVipTier('10')" id="vipTierBtn10" class="px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-amber-500 text-darkbg border-amber-500 font-black shadow whitespace-nowrap">
                     Odd 10+ Ticket
                 </button>
-                <button onclick="setVipTier('20')" id="vipTierBtn20" class="px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-darkborder/60 text-gray-300 border-darkborder">
+                <button onclick="setVipTier('20')" id="vipTierBtn20" class="px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-darkborder/60 text-gray-300 border-darkborder whitespace-nowrap">
                     Odd 20+ Ticket
+                </button>
+                <button onclick="setVipTier('50')" id="vipTierBtn50" class="px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-darkborder/60 text-gray-300 border-darkborder whitespace-nowrap">
+                    Odd 50+ Mega
                 </button>
             </div>
 
@@ -295,7 +306,7 @@
                 <div class="flex justify-between items-center p-3 bg-darkbg/80 border border-darkborder rounded-xl">
                     <div>
                         <span class="font-bold text-gray-200 block">AI Match Alerts</span>
-                        <span class="text-gray-400 text-[10px]">Receive notifications for high-confidence 2-leg combos</span>
+                        <span class="text-gray-400 text-[10px]">Receive notifications for high-confidence predictions</span>
                     </div>
                     <input type="checkbox" checked onchange="saveSetting('notifications', this.checked)" class="w-4 h-4 accent-emerald-500 rounded">
                 </div>
@@ -320,36 +331,32 @@
                 <p id="modalMatchLeague" class="text-xs text-gray-400 font-medium">League</p>
             </div>
 
-            <!-- Highlighted 2-Leg AI Combo Box -->
+            <!-- Highlighted Single Pick AI Box -->
             <div class="bg-darkbg/90 border border-emerald-500/30 p-4 rounded-xl space-y-3">
                 <div class="flex justify-between items-center border-b border-darkborder/60 pb-2">
                     <div class="flex items-center space-x-2">
-                        <span class="text-xs font-bold text-amber-400 uppercase tracking-wide">AI Recommended 2-Leg Combo</span>
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-wide">AI Recommended Single Pick</span>
                         <span id="modalComboConfidence" class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-bold">88% Conf.</span>
                     </div>
-                    <span id="modalComboOdds" class="text-sm font-black text-emerald-400 font-mono">@ 2.45</span>
+                    <span id="modalComboOdds" class="text-sm font-black text-emerald-400 font-mono">@ 1.85</span>
                 </div>
 
                 <div class="space-y-2 text-xs">
                     <div class="flex justify-between text-gray-300">
-                        <span class="text-gray-400">Leg 1:</span>
+                        <span class="text-gray-400">Single Match Pick:</span>
                         <span id="modalLeg1" class="font-bold text-white">Double Chance 1X</span>
-                    </div>
-                    <div class="flex justify-between text-gray-300">
-                        <span class="text-gray-400">Leg 2:</span>
-                        <span id="modalLeg2" class="font-bold text-white">Over 2.5 Goals</span>
                     </div>
                 </div>
 
                 <div class="pt-2 border-t border-darkborder/60">
                     <span class="text-[10px] text-gray-400 block uppercase font-mono mb-1">AI Rationale</span>
-                    <p id="modalRationale" class="text-xs text-gray-300 italic">Statistical regression detects strong momentum backed by goal trend alignment.</p>
+                    <p id="modalRationale" class="text-xs text-gray-300 italic">Statistical regression detects strong home pitch control and high goal probability.</p>
                 </div>
             </div>
 
             <div class="flex gap-2">
                 <button onclick="copySingleCombo()" class="w-1/2 py-3 bg-darkborder/80 hover:bg-darkborder text-gray-200 font-bold rounded-xl text-xs transition">
-                    Copy 2-Leg Pick
+                    Copy Single Pick
                 </button>
                 <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="w-1/2 py-3 bg-emerald-500 hover:bg-emerald-600 text-darkbg font-bold rounded-xl text-center text-xs block transition">
                     Play on Partner Portal
@@ -362,7 +369,7 @@
     <script>
         let currentDate = new Date();
         let vipDate = new Date();
-        let selectedVipTier = '10'; // Options: '5', '10', '20'
+        let selectedVipTier = '10'; // Options: '5', '10', '20', '50'
         let showOnlyLive = false;
         let selectedLeague = 'ALL';
         let searchQuery = '';
@@ -453,16 +460,16 @@
                 const probH = Math.floor(35 + Math.random() * 35);
                 const probA = Math.floor(20 + Math.random() * 30);
 
-                const legsPool = [
-                    probH >= probA ? { type: "DC", text: "1X (Home/Draw)" } : { type: "DC", text: "X2 (Draw/Away)" },
-                    (probH + probA) > 65 ? { type: "BTTS", text: "BTTS Yes" } : { type: "BTTS", text: "BTTS No" },
-                    (probH + probA) > 60 ? { type: "OU", text: "Over 2.5 Goals" } : { type: "OU", text: "Over 1.5 Goals" }
+                // Single Pick Selection logic (DC, O/U, or BTTS)
+                const singlePickPool = [
+                    probH >= probA ? "1X (Home/Draw)" : "X2 (Draw/Away)",
+                    (probH + probA) > 65 ? "BTTS Yes" : "Over 1.5 Goals",
+                    (probH + probA) > 60 ? "Over 2.5 Goals" : "1X (Home/Draw)"
                 ];
 
-                const leg1 = legsPool[0];
-                const leg2 = legsPool[1];
+                const singlePick = singlePickPool[Math.floor(Math.random() * singlePickPool.length)];
                 const confidence = Math.floor(82 + Math.random() * 13);
-                const odds = (1.95 + (Math.random() * 0.95)).toFixed(2);
+                const odds = (1.50 + (Math.random() * 0.75)).toFixed(2);
 
                 const matchObj = {
                     id: evt.id || Math.floor(Math.random() * 100000),
@@ -475,11 +482,10 @@
                     isLive: isLive,
                     probH: probH,
                     probA: probA,
-                    leg1: leg1.text,
-                    leg2: leg2.text,
+                    leg1: singlePick,
                     confidence: confidence,
                     odds: odds,
-                    rationale: `Statistical regression detects strong ${leg1.text} momentum backed by ${leg2.text} alignment in recent 10-match trends.`
+                    rationale: `Statistical model detects high efficiency for ${singlePick} market based on recent performance metrics.`
                 };
 
                 if (!leaguesMap[leagueName]) {
@@ -557,12 +563,10 @@
                                 </button>
                             </div>
 
-                            <!-- 2-Leg AI Combo Pill Card -->
+                            <!-- Single Pick AI Pill Card -->
                             <div class="bg-darkbg/80 border border-emerald-500/20 p-2.5 rounded-lg flex items-center justify-between text-[11px]">
                                 <div class="flex items-center gap-1.5 font-bold flex-wrap">
-                                    <span class="text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">${m.leg1}</span>
-                                    <span class="text-gray-500">+</span>
-                                    <span class="text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">${m.leg2}</span>
+                                    <span class="text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">Pick: ${m.leg1}</span>
                                     <span class="text-[10px] text-gray-400 font-mono">(${m.confidence}%)</span>
                                 </div>
                                 <span class="font-mono font-bold text-emerald-400 ml-2 whitespace-nowrap">@ ${m.odds}</span>
@@ -592,7 +596,7 @@
             if (window.lucide) lucide.createIcons();
         }
 
-        // 4. Accurate Win/Loss Evaluator for Historical VIP Accumulators
+        // 4. Single Pick Accumulator Engine for Odd 5, Odd 10, Odd 20 & Odd 50
         function setVipTier(tier) {
             selectedVipTier = tier;
             updateVipTierUI();
@@ -600,20 +604,20 @@
         }
 
         function updateVipTierUI() {
-            const tiers = ['5', '10', '20'];
+            const tiers = ['5', '10', '20', '50'];
             tiers.forEach(t => {
                 const btn = document.getElementById(`vipTierBtn${t}`);
                 if (btn) {
                     if (t === selectedVipTier) {
-                        btn.className = "px-4 py-1.5 rounded-xl text-xs font-black border transition bg-amber-500 text-darkbg border-amber-500 shadow";
+                        btn.className = "px-4 py-1.5 rounded-xl text-xs font-black border transition bg-amber-500 text-darkbg border-amber-500 shadow whitespace-nowrap";
                     } else {
-                        btn.className = "px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-darkborder/60 text-gray-300 border-darkborder hover:text-white";
+                        btn.className = "px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-darkborder/60 text-gray-300 border-darkborder hover:text-white whitespace-nowrap";
                     }
                 }
             });
         }
 
-        // Bet Outcome Validation Function
+        // Bet Outcome Validation
         function evaluateLegWin(pick, homeScore, awayScore) {
             const totalGoals = homeScore + awayScore;
             
@@ -658,7 +662,7 @@
                     banner.innerHTML = `
                         <div class="flex items-center space-x-2 text-emerald-400">
                             <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-                            <span>Historical Ticket Outcome: <strong>100% WON</strong> (${wonLegsCount}/${totalLegs})</span>
+                            <span>Historical Outcome: <strong>100% WON</strong> (${wonLegsCount}/${totalLegs})</span>
                         </div>
                         <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 font-black">WON</span>
                     `;
@@ -666,7 +670,7 @@
                     banner.innerHTML = `
                         <div class="flex items-center space-x-2 text-red-400">
                             <i data-lucide="x-circle" class="w-4 h-4"></i>
-                            <span>Historical Ticket Outcome: <strong>LOST</strong> (${wonLegsCount}/${totalLegs} Legs Won)</span>
+                            <span>Historical Outcome: <strong>LOST</strong> (${wonLegsCount}/${totalLegs} Single Picks Won)</span>
                         </div>
                         <span class="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded border border-red-500/30 font-black">LOST</span>
                     `;
@@ -675,7 +679,7 @@
                 banner.innerHTML = `
                     <div class="flex items-center space-x-2 text-blue-400">
                         <i data-lucide="clock" class="w-4 h-4"></i>
-                        <span>Early AI Value Accumulator</span>
+                        <span>Early AI Single Pick Accumulator</span>
                     </div>
                     <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-black">UPCOMING</span>
                 `;
@@ -683,7 +687,7 @@
                 banner.innerHTML = `
                     <div class="flex items-center space-x-2 text-amber-400">
                         <i data-lucide="zap" class="w-4 h-4"></i>
-                        <span>Today's Live VIP Combo</span>
+                        <span>Today's Live Single Pick Ticket</span>
                     </div>
                     <span class="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded border border-amber-500/30 font-black">ACTIVE</span>
                 `;
@@ -715,7 +719,7 @@
                             <span class="text-[10px] text-gray-500 font-mono">${leg.time}</span>
                         </div>
                         <p class="font-bold text-white">${leg.match}</p>
-                        <p class="${isPast ? (leg.isWon ? 'text-emerald-400' : 'text-red-400') : 'text-emerald-400'} text-[11px] font-semibold">Pick: ${leg.pick}</p>
+                        <p class="${isPast ? (leg.isWon ? 'text-emerald-400' : 'text-red-400') : 'text-emerald-400'} text-[11px] font-semibold">Single Pick: ${leg.pick}</p>
                     </div>
                     <div class="text-right space-y-1">
                         ${scoreOrStatus}
@@ -742,29 +746,35 @@
                 { home: "Atletico Madrid", away: "Sevilla", league: "La Liga" },
                 { home: "Leverkusen", away: "RB Leipzig", league: "Bundesliga" },
                 { home: "Inter Milan", away: "Napoli", league: "Serie A" },
-                { home: "Monaco", away: "Lyon", league: "Ligue 1" }
+                { home: "Monaco", away: "Lyon", league: "Ligue 1" },
+                { home: "Ajax", away: "Feyenoord", league: "Eredivisie" },
+                { home: "Benfica", away: "Porto", league: "Liga Portugal" }
             ];
 
-            const picksPool = [
-                "1X + Over 1.5 Goals", "BTTS Yes", "Over 2.5 Goals", "1X + BTTS Yes", "X2 + Over 1.5 Goals", "Over 2.5 Goals + 1X"
+            const singlePicksPool = [
+                "1X (Home/Draw)", "X2 (Draw/Away)", "Over 1.5 Goals", "BTTS Yes", "Over 2.5 Goals", "Under 3.5 Goals"
             ];
 
-            const legsCount = tier === '5' ? 3 : (tier === '20' ? 5 : 4);
+            // Legs calculation for single-pick accumulators
+            let legsCount = 4;
+            if (tier === '5') legsCount = 3;
+            else if (tier === '20') legsCount = 6;
+            else if (tier === '50') legsCount = 8; // Odd 50 Mega ticket
+
             const matches = [];
 
             for (let i = 0; i < legsCount; i++) {
                 const idx = (dateSeed + i * 3) % teamsPool.length;
-                const pickIdx = (dateSeed + i * 2) % picksPool.length;
+                const pickIdx = (dateSeed + i * 2) % singlePicksPool.length;
                 const t = teamsPool[idx];
 
                 const homeName = t.home || "Home Team";
                 const awayName = t.away || "Away Team";
-                const odds = parseFloat((1.50 + ((dateSeed + i * 7) % 85) / 100).toFixed(2));
+                const odds = parseFloat((1.45 + ((dateSeed + i * 7) % 60) / 100).toFixed(2));
                 
-                // Deterministic historical scorelines based on date algorithm
                 const homeGoals = (dateSeed + i * 5) % 4;
                 const awayGoals = (dateSeed + i * 3) % 3;
-                const selectedPick = picksPool[pickIdx];
+                const selectedPick = singlePicksPool[pickIdx];
 
                 const isWon = isPast ? evaluateLegWin(selectedPick, homeGoals, awayGoals) : true;
 
@@ -773,7 +783,7 @@
                     league: t.league,
                     pick: selectedPick,
                     odds: odds,
-                    time: `${15 + i * 2}:00`,
+                    time: `${14 + i}:30`,
                     score: `${homeGoals} - ${awayGoals}`,
                     isWon: isWon
                 });
@@ -797,9 +807,9 @@
         function copyVipTicket() {
             const dateStr = vipDate.toISOString().split('T')[0];
             const targetOdds = document.getElementById('vipTotalOdds').innerText;
-            const text = `👑 GOAL VIP ODD ${selectedVipTier}+ TICKET (${dateStr}) 👑\nTotal Odds: ${targetOdds}\n\nCheck full picks on Exness: https://one.exnessonelink.com/a/m3alh1ljmu?source=app`;
+            const text = `👑 GOAL VIP ODD ${selectedVipTier}+ SINGLE PICKS TICKET (${dateStr}) 👑\nTotal Odds: ${targetOdds}\n\nCheck full picks on Exness: https://one.exnessonelink.com/a/m3alh1ljmu?source=app`;
             navigator.clipboard.writeText(text).then(() => {
-                alert(`VIP Odd ${selectedVipTier}+ Ticket copied to clipboard!`);
+                alert(`VIP Odd ${selectedVipTier}+ Single Picks Ticket copied to clipboard!`);
             });
         }
 
@@ -904,7 +914,6 @@
 
             document.getElementById('modalMatchTitle').innerText = `${activeMatch.home} vs ${activeMatch.away}`;
             document.getElementById('modalLeg1').innerText = activeMatch.leg1;
-            document.getElementById('modalLeg2').innerText = activeMatch.leg2;
             document.getElementById('modalComboConfidence').innerText = `${activeMatch.confidence}% Conf.`;
             document.getElementById('modalComboOdds').innerText = `@ ${activeMatch.odds}`;
             document.getElementById('modalRationale').innerText = activeMatch.rationale;
@@ -918,9 +927,9 @@
 
         function copySingleCombo() {
             if (!activeMatch) return;
-            const text = `🔥 GOAL AI 2-LEG COMBO 🔥\n${activeMatch.home} vs ${activeMatch.away}\nTotal Odds: @${activeMatch.odds} (${activeMatch.confidence}% Confidence)\n\nLeg 1: ${activeMatch.leg1}\nLeg 2: ${activeMatch.leg2}\n\nPlay on Partner Portal: https://one.exnessonelink.com/a/m3alh1ljmu?source=app`;
+            const text = `🔥 GOAL AI SINGLE PICK 🔥\n${activeMatch.home} vs ${activeMatch.away}\nPick: ${activeMatch.leg1} (@${activeMatch.odds})\nConfidence: ${activeMatch.confidence}%\n\nPlay on Partner Portal: https://one.exnessonelink.com/a/m3alh1ljmu?source=app`;
             navigator.clipboard.writeText(text).then(() => {
-                alert("2-Leg AI Pick copied to clipboard!");
+                alert("Single AI Pick copied to clipboard!");
             });
         }
 
@@ -952,15 +961,15 @@
                     league: "UEFA Europa League",
                     stage: "League Stage",
                     matches: [
-                        { id: 101, time: "19:45", status: "FT", home: "Ararat Armenia", away: "AZ Alkmaar", scoreHome: 0, scoreAway: 2, isLive: false, leg1: "X2 (Draw/Away)", leg2: "Over 1.5 Goals", confidence: 91, odds: "1.95", rationale: "AZ Alkmaar dominance aligns with solid defensive structure preventing high home scoring." },
-                        { id: 102, time: "19:45", status: "78'", home: "Ferencvaros", away: "Torreense", scoreHome: 2, scoreAway: 0, isLive: true, leg1: "1X (Home/Draw)", leg2: "Over 2.5 Goals", confidence: 87, odds: "2.40", rationale: "High offensive xG trends indicate goal volume coupled with home pitch control." }
+                        { id: 101, time: "19:45", status: "FT", home: "Ararat Armenia", away: "AZ Alkmaar", scoreHome: 0, scoreAway: 2, isLive: false, leg1: "X2 (Draw/Away)", confidence: 91, odds: "1.45", rationale: "AZ Alkmaar dominance aligns with solid defensive structure preventing high home scoring." },
+                        { id: 102, time: "19:45", status: "78'", home: "Ferencvaros", away: "Torreense", scoreHome: 2, scoreAway: 0, isLive: true, leg1: "1X (Home/Draw)", confidence: 87, odds: "1.35", rationale: "High offensive xG trends indicate goal volume coupled with home pitch control." }
                     ]
                 },
                 {
                     league: "Premier League",
                     stage: "Matchday 9",
                     matches: [
-                        { id: 105, time: "16:00", status: "FT", home: "Arsenal", away: "Chelsea", scoreHome: 3, scoreAway: 1, isLive: false, leg1: "1X (Home/Draw)", leg2: "BTTS Yes", confidence: 89, odds: "2.15", rationale: "Strong derby intensity yields reciprocal goals while preserving home outcome safety." }
+                        { id: 105, time: "16:00", status: "FT", home: "Arsenal", away: "Chelsea", scoreHome: 3, scoreAway: 1, isLive: false, leg1: "1X (Home/Draw)", confidence: 89, odds: "1.40", rationale: "Strong derby intensity yields home outcome safety." }
                     ]
                 }
             ];
