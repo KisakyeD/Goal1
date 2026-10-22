@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XAUUSD EA & AI Sniper Engine | Live SMC Analytics</title>
+    <title>XAUUSD AI Sniper Engine - Dynamic Live Analytics & Auto-Refresh Signals</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -23,6 +24,7 @@
             }
         }
     </script>
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         .glow-gold { box-shadow: 0 0 20px rgba(234, 179, 8, 0.2); }
@@ -32,7 +34,7 @@
         .animate-pulse-fast { animation: pulse-fast 1s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     </style>
 </head>
-<body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col transition-colors duration-200 dark" id="bodyEl">
+<body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col transition-colors duration-200" id="bodyEl">
 
     <!-- Top Navigation Header -->
     <header class="border-b border-gray-800 bg-gray-900/90 backdrop-blur sticky top-0 z-50">
@@ -46,7 +48,7 @@
                         XAUUSD <span class="text-gold-400">SNIPER AI</span>
                         <span class="text-[10px] bg-gold-500/20 text-gold-400 border border-gold-500/30 px-2 py-0.5 rounded-full font-mono">v4.0 EA</span>
                     </h1>
-                    <p class="text-xs text-gray-400">Institutional SMC & Order Flow Deep Engine</p>
+                    <p class="text-xs text-gray-400">Institutional SMC & Order Flow Engine</p>
                 </div>
             </div>
 
@@ -60,7 +62,7 @@
                     </div>
                 </div>
 
-                <!-- Dark / Light Theme Toggle -->
+                <!-- Theme Toggle -->
                 <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-700 transition">
                     <i data-lucide="sun" id="sunIcon" class="w-5 h-5 hidden"></i>
                     <i data-lucide="moon" id="moonIcon" class="w-5 h-5"></i>
@@ -120,9 +122,7 @@
 
             <!-- Active AI Sniper Signal Card -->
             <div class="lg:col-span-2 space-y-6">
-                
                 <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden glow-gold">
-                    <!-- Top Status Bar -->
                     <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-4 border-b border-gray-800">
                         <div class="flex items-center space-x-3">
                             <span id="sigTypeBadge" class="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg font-bold text-sm tracking-wider">
@@ -141,7 +141,6 @@
                         </div>
                     </div>
 
-                    <!-- Live Parameters Grid -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-4 p-4 bg-gray-950/80 rounded-xl border border-gray-800/80">
                         <div>
                             <span class="text-xs text-gray-400 uppercase font-mono block">Sniper Entry</span>
@@ -161,7 +160,6 @@
                         </div>
                     </div>
 
-                    <!-- SMC Confluence Breakdown -->
                     <div class="space-y-3">
                         <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">AI Confluence Breakdown:</h4>
                         <div id="confluenceTags" class="flex flex-wrap gap-2">
@@ -172,7 +170,6 @@
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
                     <div class="mt-6 flex flex-wrap gap-3 items-center justify-between border-t border-gray-800 pt-4">
                         <div class="text-xs text-gray-400 flex items-center gap-1">
                             <i data-lucide="clock" class="w-4 h-4 text-gold-400"></i> Active Signal ID: <span id="activeSigId" class="text-gray-200 font-mono">#SIG-409022</span>
@@ -187,7 +184,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <!-- DOM / Order Flow Ladder -->
@@ -201,7 +197,7 @@
                     </div>
 
                     <div class="space-y-2 text-xs font-mono" id="domBookmap">
-                        <!-- Dynamic DOM content loaded via JavaScript -->
+                        <!-- Dynamic DOM content loaded via JS -->
                     </div>
                 </div>
             </div>
@@ -217,7 +213,6 @@
                     <p class="text-xs text-gray-400">Auto-recorded signals evaluated against real-time market motion</p>
                 </div>
 
-                <!-- Stats Counters -->
                 <div class="flex items-center space-x-3 text-xs font-mono">
                     <div class="bg-gray-950 border border-gray-800 px-3 py-1.5 rounded-lg text-center">
                         <span class="text-gray-400 block text-[10px]">Win Rate</span>
@@ -278,16 +273,14 @@
         </div>
     </footer>
 
-    <!-- JavaScript Logic Engine -->
+    <!-- Script Logic Engine -->
     <script>
         lucide.createIcons();
 
-        // System State
         let currentPrice = 4090.50;
         let countdown = 15;
         let currentFilter = 'ALL';
 
-        // Signal History Data
         let historyData = [
             { id: '#SIG-408980', type: 'BUY', entry: '$4,076.00', sl: '$4,068.50', tp1: '$4,090.00', tp2: '$4,102.00', status: 'TP2 HIT', pips: '+260 pips', rationale: 'Daily Sweep + H1 Order Block', time: '22 Oct 2026, 05:30 AM' },
             { id: '#SIG-408910', type: 'SELL', entry: '$4,115.00', sl: '$4,122.00', tp1: '$4,101.00', tp2: '$4,088.00', status: 'TP2 HIT', pips: '+270 pips', rationale: 'H4 Supply Zone + MSS', time: '21 Oct 2026, 18:45 PM' },
@@ -299,7 +292,6 @@
             { id: '#SIG-408510', type: 'BUY', entry: '$4,020.00', sl: '$4,012.00', tp1: '$4,035.00', tp2: '$4,048.00', status: 'TP1 HIT', pips: '+150 pips', rationale: 'Asian Session Liquidity Sweep', time: '18 Oct 2026, 04:10 AM' }
         ];
 
-        // Active Setup Object
         let activeSetup = {
             id: '#SIG-409022',
             type: 'BUY',
@@ -311,7 +303,6 @@
             status: 'ACTIVE'
         };
 
-        // Theme Toggle Functionality
         function toggleTheme() {
             const body = document.getElementById('bodyEl');
             const sunIcon = document.getElementById('sunIcon');
@@ -330,7 +321,6 @@
             }
         }
 
-        // Live Simulated Price Tick Generator
         setInterval(() => {
             const delta = (Math.random() - 0.48) * 0.45;
             currentPrice = parseFloat((currentPrice + delta).toFixed(2));
@@ -346,7 +336,6 @@
             checkSetupOutcome();
         }, 1500);
 
-        // Auto Refresh Scanner Timer
         setInterval(() => {
             countdown--;
             if (countdown <= 0) {
@@ -475,7 +464,6 @@
             filtered.forEach(row => {
                 const tr = document.createElement('tr');
                 const isTP = row.status.includes('TP');
-                const isSL = row.status.includes('SL');
 
                 tr.innerHTML = `
                     <td class="p-3 font-mono text-gray-400">${row.id}</td>
@@ -526,7 +514,6 @@
             });
         }
 
-        // Initialize App
         renderDOM();
         renderHistoryTable();
         updateActiveCardUI();
