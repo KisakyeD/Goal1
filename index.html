@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goal - Live Football Scores & AI Predictions</title>
+    <title>Goal - Single Match Same-Game Combo Predictions</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -16,6 +16,7 @@
                         darkcard: '#161a22',
                         darkborder: '#232834',
                         accentgreen: '#22c55e',
+                        gold: '#facc15',
                     }
                 }
             }
@@ -39,6 +40,7 @@
                         G
                     </div>
                     <span class="font-black text-xl tracking-wider uppercase text-white">GOAL</span>
+                    <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">SINGLE COMBOS</span>
                 </div>
             </div>
 
@@ -108,7 +110,7 @@
 
             <div class="flex items-center space-x-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
                 <i data-lucide="sparkles" class="w-4 h-4"></i>
-                <span>Goal AI Engine Prediction</span>
+                <span>Single Match Combo Analytics</span>
             </div>
 
             <div class="text-center space-y-1">
@@ -116,6 +118,30 @@
                 <p id="modalMatchLeague" class="text-xs text-gray-400 font-medium">League</p>
             </div>
 
+            <!-- Highlighted Single Match Combo Box -->
+            <div class="bg-darkbg/90 border border-emerald-500/30 p-4 rounded-xl space-y-3">
+                <div class="flex justify-between items-center border-b border-darkborder/60 pb-2">
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wide">AI Single Match Combo</span>
+                    <span id="modalComboOdds" class="text-sm font-black text-emerald-400 font-mono">@ 3.10</span>
+                </div>
+
+                <div class="space-y-1.5 text-xs">
+                    <div class="flex justify-between text-gray-300">
+                        <span class="text-gray-400">1. Double Chance:</span>
+                        <span id="modalComboDC" class="font-bold text-white">1X (Home or Draw)</span>
+                    </div>
+                    <div class="flex justify-between text-gray-300">
+                        <span class="text-gray-400">2. Both Teams To Score:</span>
+                        <span id="modalComboBTTS" class="font-bold text-white">BTTS Yes</span>
+                    </div>
+                    <div class="flex justify-between text-gray-300">
+                        <span class="text-gray-400">3. Total Match Goals:</span>
+                        <span id="modalComboOU" class="font-bold text-white">Over 2.5 Goals</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Win Probabilities Bar -->
             <div class="space-y-2">
                 <div class="flex justify-between text-xs font-bold text-gray-300">
                     <span>Home Win: <span id="probHome" class="text-emerald-400">58%</span></span>
@@ -129,38 +155,25 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-medium">
-                <div class="bg-darkbg/80 border border-darkborder p-3 rounded-xl">
-                    <span class="text-gray-400 block text-[10px]">Predicted Correct Score</span>
-                    <span id="aiScore" class="text-base font-bold text-emerald-400">2 - 0</span>
-                </div>
-                <div class="bg-darkbg/80 border border-darkborder p-3 rounded-xl">
-                    <span class="text-gray-400 block text-[10px]">HT / FT Prediction</span>
-                    <span id="aiHtFt" class="text-base font-bold text-emerald-400">1/1</span>
-                </div>
-                <div class="bg-darkbg/80 border border-darkborder p-3 rounded-xl">
-                    <span class="text-gray-400 block text-[10px]">Expected Goals (xG)</span>
-                    <span id="aixG" class="text-base font-bold text-gray-200">2.15 vs 0.82</span>
-                </div>
-                <div class="bg-darkbg/80 border border-darkborder p-3 rounded-xl">
-                    <span class="text-gray-400 block text-[10px]">Over 2.5 Confidence</span>
-                    <span id="aiOver25" class="text-base font-bold text-amber-400">67% High</span>
-                </div>
+            <div class="flex gap-2">
+                <button onclick="copySingleCombo()" class="w-1/2 py-3 bg-darkborder/80 hover:bg-darkborder text-gray-200 font-bold rounded-xl text-xs transition">
+                    Copy Single Combo
+                </button>
+                <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="w-1/2 py-3 bg-emerald-500 hover:bg-emerald-600 text-darkbg font-bold rounded-xl text-center text-xs block transition">
+                    Play on Partner Portal
+                </a>
             </div>
-
-            <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-darkbg font-bold rounded-xl text-center text-xs block transition">
-                Place Odds on Partner Portal
-            </a>
         </div>
     </div>
 
-    <!-- PROPERLY WRAPPED JAVASCRIPT ENGINE -->
+    <!-- JAVASCRIPT ENGINE -->
     <script>
         let currentDate = new Date();
         let showOnlyLive = false;
         let selectedLeague = 'ALL';
         let searchQuery = '';
         let globalLeaguesData = [];
+        let activeMatch = null;
 
         if (window.lucide) {
             lucide.createIcons();
@@ -217,6 +230,16 @@
                 const probA = Math.floor(20 + Math.random() * 30);
                 const probD = 100 - probH - probA;
 
+                // Single Match Combo parameters (Double Chance, BTTS, Over/Under Goals ONLY)
+                const dcOptions = ["1X (Home/Draw)", "X2 (Draw/Away)", "12 (Home/Away)"];
+                const bttsOptions = ["BTTS Yes", "BTTS No"];
+                const ouOptions = ["Over 1.5 Goals", "Over 2.5 Goals", "Under 2.5 Goals", "Over 3.5 Goals"];
+
+                const selectedDC = probH >= probA ? "1X (Home/Draw)" : "X2 (Draw/Away)";
+                const selectedBTTS = (probH + probA) > 60 ? "BTTS Yes" : "BTTS No";
+                const selectedOU = (probH + probA) > 70 ? "Over 2.5 Goals" : "Over 1.5 Goals";
+                const comboOdds = (2.20 + (Math.random() * 1.6)).toFixed(2);
+
                 const matchObj = {
                     id: evt.id || Math.floor(Math.random() * 100000),
                     time: evt.date ? new Date(evt.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "19:45",
@@ -229,10 +252,10 @@
                     probH: probH,
                     probD: probD,
                     probA: probA,
-                    score: `${Math.min(3, Math.floor(probH / 20))} - ${Math.min(2, Math.floor(probA / 25))}`,
-                    htft: probH > probA ? "1/1" : "X/2",
-                    xg: `${(probH * 0.035).toFixed(2)} vs ${(probA * 0.03).toFixed(2)}`,
-                    over25: `${Math.floor(50 + Math.random() * 40)}%`
+                    comboDC: selectedDC,
+                    comboBTTS: selectedBTTS,
+                    comboOU: selectedOU,
+                    comboOdds: comboOdds
                 };
 
                 if (!leaguesMap[leagueName]) {
@@ -282,30 +305,44 @@
                 if (filteredMatches.length === 0) return;
 
                 const leagueBox = document.createElement('div');
-                leagueBox.className = 'bg-darkcard border border-darkborder rounded-xl overflow-hidden shadow-sm';
+                leagueBox.className = 'bg-darkcard border border-darkborder rounded-xl overflow-hidden shadow-sm space-y-0';
 
                 let matchesHTML = '';
                 filteredMatches.forEach(m => {
                     matchesHTML += `
-                        <div onclick="openPredictionModal('${m.id}')" class="px-4 py-3 border-b border-darkborder/50 hover:bg-darkborder/30 cursor-pointer transition flex items-center justify-between">
-                            <div class="w-16 text-center border-r border-darkborder/60 pr-3">
-                                <span class="text-xs font-mono font-bold ${m.isLive ? 'text-emerald-400 animate-pulse' : 'text-gray-400'}">${m.isLive ? m.status : m.time}</span>
+                        <div onclick="openPredictionModal('${m.id}')" class="p-4 border-b border-darkborder/50 hover:bg-darkborder/30 cursor-pointer transition space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="w-16 border-r border-darkborder/60 pr-2">
+                                    <span class="text-xs font-mono font-bold ${m.isLive ? 'text-emerald-400 animate-pulse' : 'text-gray-400'}">${m.isLive ? m.status : m.time}</span>
+                                </div>
+
+                                <div class="flex-grow px-3 space-y-1">
+                                    <div class="flex justify-between items-center text-xs font-semibold text-gray-200">
+                                        <span>${m.home}</span>
+                                        <span class="font-mono font-bold text-sm text-emerald-400">${m.scoreHome}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-xs font-semibold text-gray-200">
+                                        <span>${m.away}</span>
+                                        <span class="font-mono font-bold text-sm text-emerald-400">${m.scoreAway}</span>
+                                    </div>
+                                </div>
+
+                                <button class="p-1.5 text-gray-500 hover:text-amber-400 transition" onclick="event.stopPropagation()">
+                                    <i data-lucide="star" class="w-4 h-4"></i>
+                                </button>
                             </div>
 
-                            <div class="flex-grow px-4 space-y-1">
-                                <div class="flex justify-between items-center text-xs font-semibold text-gray-200">
-                                    <span>${m.home}</span>
-                                    <span class="font-mono font-bold text-sm text-emerald-400">${m.scoreHome}</span>
+                            <!-- Single Match Combo Pill Card -->
+                            <div class="bg-darkbg/80 border border-emerald-500/20 p-2.5 rounded-lg flex items-center justify-between text-[11px]">
+                                <div class="flex flex-wrap items-center gap-1.5 font-bold">
+                                    <span class="text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">${m.comboDC}</span>
+                                    <span class="text-gray-500">+</span>
+                                    <span class="text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">${m.comboBTTS}</span>
+                                    <span class="text-gray-500">+</span>
+                                    <span class="text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20">${m.comboOU}</span>
                                 </div>
-                                <div class="flex justify-between items-center text-xs font-semibold text-gray-200">
-                                    <span>${m.away}</span>
-                                    <span class="font-mono font-bold text-sm text-emerald-400">${m.scoreAway}</span>
-                                </div>
+                                <span class="font-mono font-bold text-emerald-400 ml-2 whitespace-nowrap">@ ${m.comboOdds}</span>
                             </div>
-
-                            <button class="p-1.5 text-gray-500 hover:text-amber-400 transition" onclick="event.stopPropagation()">
-                                <i data-lucide="star" class="w-4 h-4"></i>
-                            </button>
                         </div>
                     `;
                 });
@@ -416,40 +453,46 @@
         }
 
         function openPredictionModal(matchId) {
-            let match = null;
-            let leagueName = '';
+            activeMatch = null;
 
             globalLeaguesData.forEach(lg => {
                 lg.matches.forEach(m => {
                     if (String(m.id) === String(matchId)) {
-                        match = m;
-                        leagueName = lg.league;
+                        activeMatch = m;
+                        document.getElementById('modalMatchLeague').innerText = lg.league;
                     }
                 });
             });
 
-            if (!match) return;
+            if (!activeMatch) return;
 
-            document.getElementById('modalMatchTitle').innerText = `${match.home} vs ${match.away}`;
-            document.getElementById('modalMatchLeague').innerText = leagueName;
-            document.getElementById('probHome').innerText = `${match.probH}%`;
-            document.getElementById('probDraw').innerText = `${match.probD}%`;
-            document.getElementById('probAway').innerText = `${match.probA}%`;
+            document.getElementById('modalMatchTitle').innerText = `${activeMatch.home} vs ${activeMatch.away}`;
+            document.getElementById('probHome').innerText = `${activeMatch.probH}%`;
+            document.getElementById('probDraw').innerText = `${activeMatch.probD}%`;
+            document.getElementById('probAway').innerText = `${activeMatch.probA}%`;
 
-            document.getElementById('barHome').style.width = `${match.probH}%`;
-            document.getElementById('barDraw').style.width = `${match.probD}%`;
-            document.getElementById('barAway').style.width = `${match.probA}%`;
+            document.getElementById('barHome').style.width = `${activeMatch.probH}%`;
+            document.getElementById('barDraw').style.width = `${activeMatch.probD}%`;
+            document.getElementById('barAway').style.width = `${activeMatch.probA}%`;
 
-            document.getElementById('aiScore').innerText = match.score;
-            document.getElementById('aiHtFt').innerText = match.htft;
-            document.getElementById('aixG').innerText = match.xg;
-            document.getElementById('aiOver25').innerText = match.over25;
+            document.getElementById('modalComboDC').innerText = activeMatch.comboDC;
+            document.getElementById('modalComboBTTS').innerText = activeMatch.comboBTTS;
+            document.getElementById('modalComboOU').innerText = activeMatch.comboOU;
+            document.getElementById('modalComboOdds').innerText = `@ ${activeMatch.comboOdds}`;
 
             document.getElementById('predictionModal').classList.remove('hidden');
         }
 
         function closePredictionModal() {
             document.getElementById('predictionModal').classList.add('hidden');
+        }
+
+        function copySingleCombo() {
+            if (!activeMatch) return;
+            const text = `🔥 GOAL SINGLE MATCH COMBO 🔥\n${activeMatch.home} vs ${activeMatch.away}\nTotal Odds: @${activeMatch.comboOdds}\n\n1. Double Chance: ${activeMatch.comboDC}\n2. BTTS: ${activeMatch.comboBTTS}\n3. Goals: ${activeMatch.comboOU}\n\nPlay on Exness: https://one.exnessonelink.com/a/m3alh1ljmu?source=app`;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Single Match Combo parameters copied!");
+            });
         }
 
         function toggleTheme() {
@@ -476,18 +519,17 @@
                     league: "UEFA Europa League",
                     stage: "League Stage",
                     matches: [
-                        { id: 101, time: "19:45", status: "FT", home: "Ararat Armenia", away: "AZ Alkmaar", scoreHome: 0, scoreAway: 2, isLive: false, probH: 20, probD: 30, probA: 50, score: "0 - 2", htft: "2/2", xg: "0.45 vs 1.95", over25: "58%" },
-                        { id: 102, time: "19:45", status: "78'", home: "Ferencvaros", away: "Torreense", scoreHome: 2, scoreAway: 0, isLive: true, probH: 72, probD: 18, probA: 10, score: "2 - 0", htft: "1/1", xg: "2.10 vs 0.35", over25: "62%" },
-                        { id: 103, time: "19:45", status: "62'", home: "Juventus", away: "Rennes", scoreHome: 1, scoreAway: 0, isLive: true, probH: 58, probD: 24, probA: 18, score: "2 - 0", htft: "1/1", xg: "1.85 vs 0.60", over25: "52%" },
-                        { id: 104, time: "19:45", status: "NS", home: "Lech Poznan", away: "Sunderland", scoreHome: "-", scoreAway: "-", isLive: false, probH: 45, probD: 30, probA: 25, score: "1 - 1", htft: "X/X", xg: "1.20 vs 1.15", over25: "48%" }
+                        { id: 101, time: "19:45", status: "FT", home: "Ararat Armenia", away: "AZ Alkmaar", scoreHome: 0, scoreAway: 2, isLive: false, probH: 20, probD: 30, probA: 50, comboDC: "X2 (Draw/Away)", comboBTTS: "BTTS No", comboOU: "Over 1.5 Goals", comboOdds: "2.85" },
+                        { id: 102, time: "19:45", status: "78'", home: "Ferencvaros", away: "Torreense", scoreHome: 2, scoreAway: 0, isLive: true, probH: 72, probD: 18, probA: 10, comboDC: "1X (Home/Draw)", comboBTTS: "BTTS Yes", comboOU: "Over 2.5 Goals", comboOdds: "3.10" },
+                        { id: 103, time: "19:45", status: "62'", home: "Juventus", away: "Rennes", scoreHome: 1, scoreAway: 0, isLive: true, probH: 58, probD: 24, probA: 18, comboDC: "1X (Home/Draw)", comboBTTS: "BTTS Yes", comboOU: "Over 1.5 Goals", comboOdds: "2.45" }
                     ]
                 },
                 {
                     league: "Premier League",
                     stage: "Matchday 9",
                     matches: [
-                        { id: 105, time: "16:00", status: "FT", home: "Arsenal", away: "Chelsea", scoreHome: 3, scoreAway: 1, isLive: false, probH: 60, probD: 22, probA: 18, score: "3 - 1", htft: "1/1", xg: "2.80 vs 1.10", over25: "78%" },
-                        { id: 106, time: "18:30", status: "41'", home: "Manchester City", away: "Liverpool", scoreHome: 1, scoreAway: 1, isLive: true, probH: 48, probD: 26, probA: 26, score: "2 - 2", htft: "X/X", xg: "2.10 vs 1.90", over25: "82%" }
+                        { id: 105, time: "16:00", status: "FT", home: "Arsenal", away: "Chelsea", scoreHome: 3, scoreAway: 1, isLive: false, probH: 60, probD: 22, probA: 18, comboDC: "1X (Home/Draw)", comboBTTS: "BTTS Yes", comboOU: "Over 2.5 Goals", comboOdds: "3.25" },
+                        { id: 106, time: "18:30", status: "41'", home: "Manchester City", away: "Liverpool", scoreHome: 1, scoreAway: 1, isLive: true, probH: 48, probD: 26, probA: 26, comboDC: "12 (Home/Away)", comboBTTS: "BTTS Yes", comboOU: "Over 3.5 Goals", comboOdds: "3.80" }
                     ]
                 }
             ];
