@@ -108,7 +108,7 @@
                 <i data-lucide="external-link" class="w-4 h-4"></i>
                 <span>Open Exness Partner Portal</span>
             </a>
-            <p class="text-[10px] text-gray-500 text-center">Goal Platform v8.1</p>
+            <p class="text-[10px] text-gray-500 text-center">Goal Platform v8.5</p>
         </div>
     </aside>
 
@@ -383,7 +383,7 @@
         let searchQuery = '';
         let globalLeaguesData = [];
         let activeMatch = null;
-        let vipApiCache = {};
+        let apiCache = {};
 
         if (window.lucide) {
             lucide.createIcons();
@@ -418,7 +418,7 @@
             }
         }
 
-        // 2. Real Prediction Generator based on match metadata
+        // 2. Real Prediction & AI Generator
         function generateAiPrediction(homeName, awayName, homeScore, awayScore) {
             const seed = (homeName + awayName).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
             
@@ -445,7 +445,7 @@
             };
         }
 
-        // 3. Fetch Live Football Data via API
+        // 3. Robust Fixture & AI Fetcher for Dashboard
         async function fetchLiveFootballData() {
             const container = document.getElementById('matchesList');
             if (container) {
@@ -457,68 +457,109 @@
                 `;
             }
 
-            try {
-                const dateStr = currentDate.toISOString().split('T')[0];
-                const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard?dates=${dateStr.replace(/-/g, '')}`);
-                
-                if (!res.ok) throw new Error("API error");
-                
-                const data = await res.json();
-                globalLeaguesData = parseESPNFootballData(data);
-                renderMatches();
-            } catch (error) {
-                console.warn("Using fallback live fixture stream");
-                globalLeaguesData = getFallbackLeaguesData();
-                renderMatches();
+            const dateStr = currentDate.toISOString().split('T')[0];
+            let events = [];
+
+            if (apiCache[dateStr]) {
+                events = apiCache[dateStr];
+            } else {
+                try {
+                    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard?dates=${dateStr.replace(/-/g, '')}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        events = data.events || [];
+                        apiCache[dateStr] = events;
+                    }
+                } catch (err) {
+                    console.warn("API Error, utilizing backup schedule stream");
+                }
             }
+
+            globalLeaguesData = parseESPNFootballData(events, dateStr);
+            renderMatches();
         }
 
-        function parseESPNFootballData(data) {
-            if (!data || !data.events || data.events.length === 0) return getFallbackLeaguesData();
-
+        function parseESPNFootballData(events, dateStr) {
             const leaguesMap = {};
 
-            data.events.forEach(evt => {
-                const competition = evt.competitions[0];
-                const leagueName = evt.league ? evt.league.name : (competition.notes?.[0]?.headline || "Global Leagues");
-                const statusType = evt.status?.type?.name;
-                const isLive = statusType === "STATUS_IN_PROGRESS" || statusType === "STATUS_HALFTIME";
-                const statusDetail = isLive ? (evt.status?.displayClock || "LIVE") : (statusType === "STATUS_FINAL" ? "FT" : evt.status?.type?.shortDetail || "NS");
+            if (events && events.length > 0) {
+                events.forEach(evt => {
+                    const competition = evt.competitions[0];
+                    const leagueName = evt.league ? evt.league.name : (competition.notes?.[0]?.headline || "Global Leagues");
+                    const statusType = evt.status?.type?.name;
+                    const isLive = statusType === "STATUS_IN_PROGRESS" || statusType === "STATUS_HALFTIME";
+                    const statusDetail = isLive ? (evt.status?.displayClock || "LIVE") : (statusType === "STATUS_FINAL" ? "FT" : evt.status?.type?.shortDetail || "NS");
 
-                const homeTeam = competition.competitors.find(c => c.homeAway === 'home');
-                const awayTeam = competition.competitors.find(c => c.homeAway === 'away');
+                    const homeTeam = competition.competitors.find(c => c.homeAway === 'home');
+                    const awayTeam = competition.competitors.find(c => c.homeAway === 'away');
 
-                const homeName = homeTeam?.team?.displayName || "Home Team";
-                const awayName = awayTeam?.team?.displayName || "Away Team";
-                const homeScore = homeTeam?.score !== undefined ? homeTeam.score : "-";
-                const awayScore = awayTeam?.score !== undefined ? awayTeam.score : "-";
+                    const homeName = homeTeam?.team?.displayName || "Home Team";
+                    const awayName = awayTeam?.team?.displayName || "Away Team";
+                    const homeScore = homeTeam?.score !== undefined ? homeTeam.score : "-";
+                    const awayScore = awayTeam?.score !== undefined ? awayTeam.score : "-";
 
-                const aiPrediction = generateAiPrediction(homeName, awayName, homeScore, awayScore);
+                    const aiPrediction = generateAiPrediction(homeName, awayName, homeScore, awayScore);
 
-                const matchObj = {
-                    id: evt.id || Math.floor(Math.random() * 100000),
-                    time: evt.date ? new Date(evt.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "19:45",
-                    status: statusDetail,
-                    home: homeName,
-                    away: awayName,
-                    scoreHome: homeScore,
-                    scoreAway: awayScore,
-                    isLive: isLive,
-                    leg1: aiPrediction.leg1,
-                    confidence: aiPrediction.confidence,
-                    odds: aiPrediction.odds,
-                    rationale: aiPrediction.rationale
-                };
-
-                if (!leaguesMap[leagueName]) {
-                    leaguesMap[leagueName] = {
-                        league: leagueName,
-                        stage: "Live Stage",
-                        matches: []
+                    const matchObj = {
+                        id: evt.id || Math.floor(Math.random() * 100000),
+                        time: evt.date ? new Date(evt.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "19:45",
+                        status: statusDetail,
+                        home: homeName,
+                        away: awayName,
+                        scoreHome: homeScore,
+                        scoreAway: awayScore,
+                        isLive: isLive,
+                        leg1: aiPrediction.leg1,
+                        confidence: aiPrediction.confidence,
+                        odds: aiPrediction.odds,
+                        rationale: aiPrediction.rationale
                     };
-                }
-                leaguesMap[leagueName].matches.push(matchObj);
-            });
+
+                    if (!leaguesMap[leagueName]) {
+                        leaguesMap[leagueName] = {
+                            league: leagueName,
+                            stage: "Matchday Fixtures",
+                            matches: []
+                        };
+                    }
+                    leaguesMap[leagueName].matches.push(matchObj);
+                });
+            }
+
+            // Fallback / Rich Match Generator if ESPN list is empty for a selected date
+            if (Object.keys(leaguesMap).length === 0) {
+                const fallbackLeagues = [
+                    { league: "Premier League", matches: [ {h: "Arsenal", a: "Chelsea"}, {h: "Liverpool", a: "Man City"}, {h: "Manchester United", a: "Tottenham"} ] },
+                    { league: "La Liga", matches: [ {h: "Real Madrid", a: "Barcelona"}, {h: "Atletico Madrid", a: "Sevilla"} ] },
+                    { league: "UEFA Champions League", matches: [ {h: "Bayern Munich", a: "PSG"}, {h: "AC Milan", a: "Juventus"} ] }
+                ];
+
+                fallbackLeagues.forEach(lg => {
+                    const matchesArr = [];
+                    lg.matches.forEach((m, idx) => {
+                        const aiPred = generateAiPrediction(m.h, m.a, idx, idx+1);
+                        matchesArr.push({
+                            id: Math.floor(Math.random() * 100000),
+                            time: `${17 + idx}:00`,
+                            status: "NS",
+                            home: m.h,
+                            away: m.a,
+                            scoreHome: "-",
+                            scoreAway: "-",
+                            isLive: false,
+                            leg1: aiPred.leg1,
+                            confidence: aiPred.confidence,
+                            odds: aiPred.odds,
+                            rationale: aiPred.rationale
+                        });
+                    });
+                    leaguesMap[lg.league] = {
+                        league: lg.league,
+                        stage: "Scheduled Fixtures",
+                        matches: matchesArr
+                    };
+                });
+            }
 
             return Object.values(leaguesMap);
         }
@@ -639,7 +680,6 @@
             });
         }
 
-        // Real Bet Outcome Evaluator
         function evaluateLegWin(pick, homeScore, awayScore) {
             if (homeScore === undefined || awayScore === undefined || homeScore === "-" || awayScore === "-") return true;
             const h = parseInt(homeScore);
@@ -698,7 +738,6 @@
 
             const isOverallTicketWon = isPast && (wonLegsCount === totalLegs);
 
-            // Dynamic Banner Status Logic
             if (isPast) {
                 if (isOverallTicketWon) {
                     banner.innerHTML = `
@@ -778,15 +817,15 @@
         async function getLiveVipFixturesForDate(dateStr, tier, isPast, isFuture) {
             let events = [];
 
-            if (vipApiCache[dateStr]) {
-                events = vipApiCache[dateStr];
+            if (apiCache[dateStr]) {
+                events = apiCache[dateStr];
             } else {
                 try {
                     const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard?dates=${dateStr.replace(/-/g, '')}`);
                     if (res.ok) {
                         const data = await res.json();
                         events = data.events || [];
-                        vipApiCache[dateStr] = events;
+                        apiCache[dateStr] = events;
                     }
                 } catch (err) {
                     console.warn("API Error");
@@ -836,7 +875,6 @@
                 }
             }
 
-            // Fallback if live events are sparse on specific dates
             if (matches.length < legsCount) {
                 const fallbackTeams = [
                     { home: "Arsenal", away: "Chelsea", league: "Premier League" },
@@ -1034,18 +1072,6 @@
 
         function saveSetting(key, val) {
             console.log(`Setting saved: ${key} = ${val}`);
-        }
-
-        function getFallbackLeaguesData() {
-            return [
-                {
-                    league: "UEFA Europa League",
-                    stage: "League Stage",
-                    matches: [
-                        { id: 101, time: "19:45", status: "FT", home: "Ararat Armenia", away: "AZ Alkmaar", scoreHome: 0, scoreAway: 2, isLive: false, leg1: "X2 (Draw/Away)", confidence: 91, odds: "1.45", rationale: "AZ Alkmaar dominance aligns with solid defensive structure preventing high home scoring." }
-                    ]
-                }
-            ];
         }
 
         setInterval(() => {
