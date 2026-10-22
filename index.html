@@ -1,621 +1,379 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XAUUSD Flow AI™ - Strong Institutional Zones Only</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            gold: {
-              400: '#fbbf24',
-              500: '#f59e0b',
-              600: '#d97706',
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XAUUSD AI Sniper Engine & Analytics</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                        },
+                        darkbg: '#0b0f17',
+                        darkcard: '#111827',
+                    }
+                }
             }
-          }
         }
-      }
-    }
-  </script>
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { height: 6px; width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  </style>
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .glow-gold { box-shadow: 0 0 15px rgba(234, 179, 8, 0.25); }
+        .glow-green { box-shadow: 0 0 15px rgba(34, 197, 94, 0.25); }
+        .glow-red { box-shadow: 0 0 15px rgba(239, 68, 68, 0.25); }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+<body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col transition-colors duration-200" id="bodyEl">
 
-  <!-- TOP HEADER -->
-  <header class="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between shadow-md">
-    <div class="flex items-center space-x-3">
-      <button id="openDrawer" class="p-2 text-slate-200 hover:bg-slate-800 rounded-lg transition-colors" aria-label="Open Menu">
-        <i class="fa-solid fa-bars text-xl"></i>
-      </button>
-      <div class="flex items-center space-x-2">
-        <span class="text-xl font-black tracking-wider bg-gradient-to-r from-amber-400 via-gold-400 to-yellow-500 bg-clip-text text-transparent">XAUUSD FLOW AI™</span>
-        <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 uppercase tracking-widest flex items-center gap-1">
-          <i class="fa-solid fa-shield-halved text-xs"></i> STRONG ZONES ONLY
-        </span>
-      </div>
-    </div>
+    <!-- Top Navigation Header -->
+    <header class="border-b border-gray-800 bg-gray-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-gold-500/10 border border-gold-500/30 rounded-lg">
+                    <i data-lucide="crosshair" class="w-6 h-6 text-gold-400"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-wide text-white flex items-center gap-2">
+                        XAUUSD <span class="text-gold-400">SNIPER AI</span>
+                        <span class="text-xs bg-gold-500/20 text-gold-400 border border-gold-500/30 px-2 py-0.5 rounded-full font-mono">v3.2 EA</span>
+                    </h1>
+                    <p class="text-xs text-gray-400">SMC & Order Flow Deep Analytics Engine</p>
+                </div>
+            </div>
 
-    <!-- LIVE WEBSOCKET / REST SYNC INDICATOR -->
-    <div class="flex items-center space-x-2 bg-slate-800 px-3 py-1 rounded-full border border-slate-700 text-xs">
-      <span class="relative flex h-2 w-2">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-      </span>
-      <span class="text-[11px] font-mono text-slate-300">Tick: <span id="syncCountdown" class="text-amber-400 font-bold">LIVE</span></span>
-    </div>
-  </header>
+            <div class="flex items-center space-x-4">
+                <!-- Live Gold Price Ticker -->
+                <div class="hidden sm:flex items-center space-x-3 bg-gray-800/80 px-4 py-1.5 rounded-lg border border-gray-700">
+                    <span class="text-xs text-gray-400 uppercase font-mono">XAU/USD Live:</span>
+                    <span id="livePrice" class="font-mono font-bold text-emerald-400 text-base">$2,735.40</span>
+                    <span id="priceChange" class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">+0.42%</span>
+                </div>
 
-  <!-- CONTINUOUS 60-DAY CALENDAR STRIP -->
-  <section class="bg-slate-900 border-b border-slate-800 py-2.5 px-2">
-    <div id="calendarStrip" class="flex overflow-x-auto space-x-2 no-scrollbar px-2 py-1 scroll-smooth">
-      <!-- Generated dynamically by JavaScript -->
-    </div>
-  </section>
-
-  <!-- MAIN CONTENT CONTAINER -->
-  <main class="flex-grow max-w-5xl w-full mx-auto p-4 space-y-5">
-    
-    <!-- REAL-TIME MARKET TICKER BAR -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-      <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between shadow-sm">
-        <div>
-          <div class="text-slate-400 font-bold uppercase text-[10px]">XAU/USD Live Spot</div>
-          <div class="text-lg font-black font-mono text-amber-400 flex items-center gap-1 mt-0.5">
-            <span id="liveGoldPrice">$2,738.50</span>
-            <span id="priceDirectionIcon" class="text-xs text-emerald-400"><i class="fa-solid fa-caret-up"></i></span>
-          </div>
+                <!-- Dark / Light Theme Toggle -->
+                <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-700 transition">
+                    <i data-lucide="sun" id="sunIcon" class="w-5 h-5 hidden"></i>
+                    <i data-lucide="moon" id="moonIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
         </div>
-        <i class="fa-solid fa-chart-line text-amber-500/20 text-3xl"></i>
-      </div>
-      <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between shadow-sm">
-        <div>
-          <div class="text-slate-400 font-bold uppercase text-[10px]">Institutional Delta</div>
-          <div class="text-base font-black font-mono text-emerald-400 mt-0.5" id="liveCvd">+3,480 Lots</div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
+
+        <!-- Metrics Overview Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-gray-400 font-medium">Market Bias (H1/H4)</p>
+                    <p id="marketBias" class="text-lg font-bold text-emerald-400 mt-1">BULLISH EXPANSION</p>
+                </div>
+                <div class="p-2.5 bg-emerald-500/10 rounded-lg text-emerald-400 border border-emerald-500/20">
+                    <i data-lucide="trending-up" class="w-5 h-5"></i>
+                </div>
+            </div>
+
+            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-gray-400 font-medium">AI Confluence Index</p>
+                    <p id="confluenceScore" class="text-lg font-bold text-gold-400 mt-1">94% High Quality</p>
+                </div>
+                <div class="p-2.5 bg-gold-500/10 rounded-lg text-gold-400 border border-gold-500/20">
+                    <i data-lucide="cpu" class="w-5 h-5"></i>
+                </div>
+            </div>
+
+            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-gray-400 font-medium">Nearest Demand Zone</p>
+                    <p id="demandZone" class="text-lg font-bold text-gray-200 mt-1 font-mono">$2,728.50 - $2,731.00</p>
+                </div>
+                <div class="p-2.5 bg-blue-500/10 rounded-lg text-blue-400 border border-blue-500/20">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                </div>
+            </div>
+
+            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-gray-400 font-medium">Nearest Supply Zone</p>
+                    <p id="supplyZone" class="text-lg font-bold text-gray-200 mt-1 font-mono">$2,748.00 - $2,752.20</p>
+                </div>
+                <div class="p-2.5 bg-rose-500/10 rounded-lg text-rose-400 border border-rose-500/20">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                </div>
+            </div>
         </div>
-        <i class="fa-solid fa-layer-group text-emerald-500/20 text-3xl"></i>
-      </div>
-      <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between shadow-sm">
-        <div>
-          <div class="text-slate-400 font-bold uppercase text-[10px]">DOM Order Imbalance</div>
-          <div class="text-base font-black font-mono text-amber-400 mt-0.5" id="liveCob">84% Heavy Bids</div>
+
+        <!-- Layout Grid: Left (Sniper Entry Signals), Right (Deep Analytics Engine & Order Flow) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Left Column: Active Sniper Signals -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Live AI Sniper Entry Signal Card -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden glow-gold">
+                    <div class="absolute top-0 right-0 bg-gold-500 text-gray-950 text-xs font-bold px-3 py-1 rounded-bl-lg flex items-center gap-1">
+                        <i data-lucide="radio" class="w-3 h-3 animate-pulse"></i> LIVE AI SETUP
+                    </div>
+
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg font-bold text-sm tracking-wider">
+                            BUY LIMIT (SNIPER)
+                        </span>
+                        <span class="text-xs text-gray-400 font-mono">Asset: XAUUSD | TF: M15/H1</span>
+                    </div>
+
+                    <!-- Signal Details Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-4 p-4 bg-gray-950/60 rounded-xl border border-gray-800/80">
+                        <div>
+                            <span class="text-xs text-gray-400 uppercase font-mono block">Sniper Entry</span>
+                            <span id="sigEntry" class="text-lg font-mono font-bold text-gold-400">$2,732.50</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-400 uppercase font-mono block">Stop Loss (SL)</span>
+                            <span id="sigSL" class="text-lg font-mono font-bold text-rose-400">$2,726.80</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-400 uppercase font-mono block">Target 1 (TP1)</span>
+                            <span id="sigTP1" class="text-lg font-mono font-bold text-emerald-400">$2,741.00</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-400 uppercase font-mono block">Target 2 (TP2)</span>
+                            <span id="sigTP2" class="text-lg font-mono font-bold text-emerald-300">$2,750.50</span>
+                        </div>
+                    </div>
+
+                    <!-- Signal Rationale & SMC Tags -->
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">AI Confluence Breakdown:</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ H1 Bullish Order Block (OB)</span>
+                            <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ M15 Liquidity Sweep below $2,730</span>
+                            <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ Fair Value Gap (FVG) Fill</span>
+                            <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ R:R Ratio 1:3.2</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-6 flex flex-wrap gap-3 items-center justify-between border-t border-gray-800 pt-4">
+                        <div class="text-xs text-gray-400 flex items-center gap-1">
+                            <i data-lucide="clock" class="w-4 h-4 text-gold-400"></i> Signal Generated: <span class="text-gray-200 font-mono">12 mins ago</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="copySignal()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-xs font-semibold rounded-lg border border-gray-700 transition flex items-center gap-1.5">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copy Parameters
+                            </button>
+                            <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="px-4 py-2 bg-gold-500 hover:bg-gold-600 text-gray-950 font-bold text-xs rounded-lg transition flex items-center gap-1.5">
+                                <i data-lucide="external-link" class="w-4 h-4"></i> Execute on Exness
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historical Signals Log -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="text-sm font-bold text-gray-200 mb-4 flex items-center gap-2">
+                        <i data-lucide="history" class="w-4 h-4 text-gold-400"></i> Recent EA Signal History
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-gray-300">
+                            <thead class="bg-gray-950 text-gray-400 uppercase font-mono border-b border-gray-800">
+                                <tr>
+                                    <th class="p-2.5">Type</th>
+                                    <th class="p-2.5">Entry</th>
+                                    <th class="p-2.5">SL</th>
+                                    <th class="p-2.5">TP Achieved</th>
+                                    <th class="p-2.5">Gain (Pips)</th>
+                                    <th class="p-2.5">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800/60 font-mono">
+                                <tr>
+                                    <td class="p-2.5 text-emerald-400 font-bold">BUY</td>
+                                    <td class="p-2.5">$2,718.20</td>
+                                    <td class="p-2.5">$2,712.00</td>
+                                    <td class="p-2.5">$2,732.00</td>
+                                    <td class="p-2.5 text-emerald-400">+138 pips</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded">TP2 Hit</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 text-rose-400 font-bold">SELL</td>
+                                    <td class="p-2.5">$2,745.50</td>
+                                    <td class="p-2.5">$2,751.00</td>
+                                    <td class="p-2.5">$2,735.00</td>
+                                    <td class="p-2.5 text-emerald-400">+105 pips</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded">TP1 Hit</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 text-emerald-400 font-bold">BUY</td>
+                                    <td class="p-2.5">$2,705.00</td>
+                                    <td class="p-2.5">$2,699.50</td>
+                                    <td class="p-2.5">$2,720.00</td>
+                                    <td class="p-2.5 text-emerald-400">+150 pips</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded">TP2 Hit</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Order Flow & AI Engine Analytics -->
+            <div class="space-y-6">
+
+                <!-- Order Flow / DOM Depth Feed -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm font-bold text-gray-200 flex items-center gap-2">
+                            <i data-lucide="layers" class="w-4 h-4 text-gold-400"></i> Market Depth (DOM Feed)
+                        </h3>
+                        <span class="text-[10px] bg-gray-800 text-gray-400 px-2 py-0.5 rounded font-mono">Live Bookmap Data</span>
+                    </div>
+
+                    <div class="space-y-2 text-xs font-mono">
+                        <!-- Ask Depth -->
+                        <div class="flex justify-between items-center text-rose-400 bg-rose-500/5 p-1.5 rounded border border-rose-500/10">
+                            <span>$2,738.50 (Ask)</span>
+                            <span class="font-bold">420 Lots</span>
+                        </div>
+                        <div class="flex justify-between items-center text-rose-400 bg-rose-500/5 p-1.5 rounded border border-rose-500/10">
+                            <span>$2,736.80 (Ask)</span>
+                            <span class="font-bold">280 Lots</span>
+                        </div>
+                        
+                        <!-- Mid Price Line -->
+                        <div class="text-center py-1 text-gold-400 font-bold border-y border-gold-500/30 my-1 bg-gold-500/5">
+                            Spread: 12 pips | Mid: <span id="domMidPrice">$2,735.40</span>
+                        </div>
+
+                        <!-- Bid Depth -->
+                        <div class="flex justify-between items-center text-emerald-400 bg-emerald-500/5 p-1.5 rounded border border-emerald-500/10">
+                            <span>$2,734.00 (Bid)</span>
+                            <span class="font-bold">310 Lots</span>
+                        </div>
+                        <div class="flex justify-between items-center text-emerald-400 bg-emerald-500/5 p-1.5 rounded border border-emerald-500/10">
+                            <span>$2,732.50 (Bid - OB)</span>
+                            <span class="font-bold">890 Lots</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Market Engine Settings & Custom Parameters -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
+                    <h3 class="text-sm font-bold text-gray-200 flex items-center gap-2">
+                        <i data-lucide="sliders" class="w-4 h-4 text-gold-400"></i> Engine Parameters
+                    </h3>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1">Trading Strategy</label>
+                            <select class="w-full bg-gray-950 border border-gray-800 text-xs text-gray-200 rounded-lg p-2.5 focus:border-gold-500 outline-none">
+                                <option>Smart Money Concepts (SMC) + Order Flow</option>
+                                <option>ICT Killzones & Liquidity Sweeps</option>
+                                <option>Volume Profile & Imbalance Fill</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1">Risk Mode</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button class="py-1.5 bg-gray-800 border border-gray-700 text-xs text-gray-300 rounded hover:border-gold-500">Low Risk</button>
+                                <button class="py-1.5 bg-gold-500/20 border border-gold-500 text-xs text-gold-400 font-bold rounded">Sniper (1:3+)</button>
+                                <button class="py-1.5 bg-gray-800 border border-gray-700 text-xs text-gray-300 rounded hover:border-gold-500">Aggressive</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Broker Sponsor Card -->
+                <div class="bg-gradient-to-br from-amber-950/40 via-gray-900 to-gray-900 border border-gold-500/30 rounded-xl p-5 text-center space-y-3">
+                    <i data-lucide="shield-alert" class="w-8 h-8 text-gold-400 mx-auto"></i>
+                    <h4 class="font-bold text-sm text-gray-100">Zero Spread & Instant Execution</h4>
+                    <p class="text-xs text-gray-400">For optimal sniper entry execution and tightest XAUUSD spreads, use our verified broker feed.</p>
+                    <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="block w-full py-2.5 bg-gold-500 hover:bg-gold-600 text-gray-950 font-bold text-xs rounded-lg transition shadow-lg">
+                        Trade XAUUSD on Exness
+                    </a>
+                </div>
+
+            </div>
         </div>
-        <i class="fa-solid fa-scale-balanced text-amber-500/20 text-3xl"></i>
-      </div>
-      <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between shadow-sm">
-        <div>
-          <div class="text-slate-400 font-bold uppercase text-[10px]">Tier-1 Bookmap Wall</div>
-          <div class="text-base font-black font-mono text-blue-400 mt-0.5" id="liveWall">$2,748.00 Wall</div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-gray-950 py-6 mt-8 text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p>© 2026 XAUUSD AI Sniper Engine. All rights reserved.</p>
+            <div class="flex items-center space-x-4">
+                <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="hover:text-gold-400 transition">Exness Partner Portal</a>
+                <span>|</span>
+                <span class="text-gray-400">Risk Warning: Gold trading involves substantial risk.</span>
+            </div>
         </div>
-        <i class="fa-solid fa-cubes text-blue-500/20 text-3xl"></i>
-      </div>
-    </div>
+    </footer>
 
-    <!-- LIVE TP/SL TRACKING PERFORMANCE DASHBOARD -->
-    <div class="grid grid-cols-3 gap-3 text-xs bg-slate-900/60 p-3.5 rounded-2xl border border-slate-800">
-      <div class="text-center p-2 rounded-xl bg-slate-900 border border-slate-800">
-        <div class="text-[10px] text-slate-400 font-bold uppercase">Strong TP Hits</div>
-        <div class="text-base font-black font-mono text-emerald-400 mt-0.5" id="statTpHits">--</div>
-      </div>
-      <div class="text-center p-2 rounded-xl bg-slate-900 border border-slate-800">
-        <div class="text-[10px] text-slate-400 font-bold uppercase">SL Invalidation Hits</div>
-        <div class="text-base font-black font-mono text-rose-400 mt-0.5" id="statSlHits">--</div>
-      </div>
-      <div class="text-center p-2 rounded-xl bg-slate-900 border border-slate-800">
-        <div class="text-[10px] text-slate-400 font-bold uppercase">Tier-1 Win Rate</div>
-        <div class="text-base font-black font-mono text-amber-400 mt-0.5" id="statWinRate">--%</div>
-      </div>
-    </div>
+    <!-- JavaScript Functions -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
 
-    <!-- LIVE FILTER & FEED HEADER -->
-    <div class="flex items-center justify-between bg-slate-900 p-3 rounded-xl border border-slate-800 text-xs shadow-sm">
-      <div class="flex items-center space-x-2">
-        <i class="fa-solid fa-bolt text-amber-400 text-sm"></i>
-        <span class="font-semibold text-slate-200">High-Confluence Filter:</span>
-        <span class="text-amber-400/90 font-medium hidden sm:inline">Only Tier-1 Bank Order Blocks (RR ≥ 1:4.5)</span>
-      </div>
-      <div id="signalCount" class="font-bold text-amber-400 font-mono">
-        Active Strong Setups
-      </div>
-    </div>
+        // Dark / Light Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.getElementById('bodyEl');
+            const sunIcon = document.getElementById('sunIcon');
+            const moonIcon = document.getElementById('moonIcon');
 
-    <!-- SIGNALS CONTAINER -->
-    <div id="signalsContainer" class="space-y-5">
-      <!-- Generated dynamically from Live Price Data -->
-    </div>
-  </main>
-
-  <!-- SPONSORED EXNESS FOOTER -->
-  <footer class="mt-8 bg-gradient-to-br from-amber-400 via-amber-500 to-yellow-500 text-slate-950 p-6 border-t-4 border-amber-300 shadow-inner">
-    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-      <div class="flex items-center space-x-4">
-        <!-- Exness Yellow Box Logo Styling -->
-        <div class="w-16 h-16 bg-slate-950 rounded-2xl p-2.5 flex items-center justify-center shadow-lg shrink-0 border border-amber-300">
-          <span class="font-black text-amber-400 text-xl tracking-tighter">exness</span>
-        </div>
-        <div>
-          <div class="text-[10px] uppercase font-black tracking-widest text-slate-900/80">Official Platform Sponsor</div>
-          <h3 class="text-xl font-black leading-tight">Trade Live Gold Spreads with Exness</h3>
-          <p class="text-xs font-medium text-slate-900/90 mt-1">Access $10,000 demo funds or start trading raw spreads on XAUUSD.</p>
-        </div>
-      </div>
-      
-      <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto px-6 py-3.5 bg-slate-950 hover:bg-slate-900 text-amber-400 font-extrabold text-sm rounded-xl text-center shadow-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shrink-0 border border-slate-800">
-        Claim $10,000 Demo Funds <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-xs"></i>
-      </a>
-    </div>
-    <div class="max-w-5xl mx-auto mt-4 pt-3 border-t border-slate-950/10 text-[11px] text-center text-slate-900/70 font-medium">
-      © 2026 XAUUSD Flow AI™. Live Order Flow Analytics. Predictions are for educational purposes only.
-    </div>
-  </footer>
-
-  <!-- SIDE DRAWER NAVIGATION -->
-  <div id="drawerOverlay" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 hidden transition-opacity"></div>
-  <aside id="sideDrawer" class="fixed top-0 left-0 bottom-0 w-80 bg-slate-900 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-slate-800 flex flex-col shadow-2xl">
-    <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
-      <div class="flex items-center space-x-2">
-        <span class="text-lg font-black tracking-wider bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">XAUUSD FLOW AI™</span>
-      </div>
-      <button id="closeDrawer" class="p-2 text-slate-400 hover:text-slate-200 rounded-lg">
-        <i class="fa-solid fa-xmark text-lg"></i>
-      </button>
-    </div>
-
-    <div class="p-4 flex-grow space-y-2">
-      <button id="btnOpenSettings" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-left font-semibold text-sm transition-colors text-slate-200">
-        <i class="fa-solid fa-gear text-amber-400 w-5"></i>
-        <span>Settings & Live Feed</span>
-      </button>
-      <button id="btnOpenPrivacy" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-left font-semibold text-sm transition-colors text-slate-200">
-        <i class="fa-solid fa-shield-halved text-amber-400 w-5"></i>
-        <span>Privacy Policy</span>
-      </button>
-      <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-left font-semibold text-sm transition-colors text-amber-400">
-        <i class="fa-solid fa-chart-line w-5"></i>
-        <span>Trade Live Gold on Exness</span>
-      </a>
-    </div>
-
-    <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
-      Strong Zones Engine v7.0 (Strict Filtering)
-    </div>
-  </aside>
-
-  <!-- SETTINGS MODAL -->
-  <div id="modalSettings" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 rounded-2xl max-w-md w-full p-6 border border-slate-800 shadow-2xl space-y-5">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-lg flex items-center space-x-2 text-slate-100">
-          <i class="fa-solid fa-gear text-amber-400"></i>
-          <span>Settings</span>
-        </h3>
-        <button class="closeModal text-slate-400 hover:text-slate-200">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-
-      <div class="space-y-4">
-        <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-xl">
-          <div>
-            <div class="font-semibold text-sm text-slate-200">Zone Strength Filter</div>
-            <div class="text-xs text-slate-400">Exclusively Tier-1 Bank Confluences</div>
-          </div>
-          <span class="font-mono text-xs font-bold text-amber-400">STRONG ONLY</span>
-        </div>
-        <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-xl">
-          <div>
-            <div class="font-semibold text-sm text-slate-200">Minimum Risk:Reward</div>
-            <div class="text-xs text-slate-400">Strict Institutional Cutoff</div>
-          </div>
-          <span class="font-mono text-xs font-bold text-emerald-400">≥ 1 : 4.5 RR</span>
-        </div>
-      </div>
-
-      <button class="closeModal w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-xl transition-colors text-slate-200">
-        Close
-      </button>
-    </div>
-  </div>
-
-  <!-- PRIVACY POLICY MODAL -->
-  <div id="modalPrivacy" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 rounded-2xl max-w-lg w-full p-6 border border-slate-800 shadow-2xl space-y-4 max-h-[80vh] flex flex-col">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-lg flex items-center space-x-2 text-slate-100">
-          <i class="fa-solid fa-shield-halved text-amber-400"></i>
-          <span>Privacy Policy</span>
-        </h3>
-        <button class="closeModal text-slate-400 hover:text-slate-200">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-
-      <div class="overflow-y-auto space-y-3 text-xs text-slate-300 pr-2 leading-relaxed">
-        <p><strong>1. Live Market Feeds:</strong> Live market data for Gold (XAUUSD) is pulled from public financial quotes and streaming price endpoints.</p>
-        <p><strong>2. Local Storage:</strong> User theme preferences and viewing states are saved directly on your browser via <code class="bg-slate-800 px-1 py-0.5 rounded text-amber-400">localStorage</code>.</p>
-        <p><strong>3. Broker Links:</strong> Exness promotional widgets route to registered affiliate destinations.</p>
-      </div>
-
-      <button class="closeModal w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-xl transition-colors text-slate-200">
-        Understand & Accept
-      </button>
-    </div>
-  </div>
-
-  <!-- JAVASCRIPT APPLICATION LOGIC -->
-  <script>
-    let selectedDateOffset = 0;
-    let currentGoldPrice = 2738.50;
-    let wsConnection = null;
-
-    document.addEventListener('DOMContentLoaded', () => {
-      renderCalendar();
-      initLiveGoldPriceStream();
-      setupEventListeners();
-    });
-
-    // CONTINUOUS 60-DAY CALENDAR STRIP
-    function renderCalendar() {
-      const calendarStrip = document.getElementById('calendarStrip');
-      calendarStrip.innerHTML = '';
-      const today = new Date();
-
-      for (let offset = -30; offset <= 30; offset++) {
-        const dateObj = new Date(today);
-        dateObj.setDate(today.getDate() + offset);
-
-        const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
-        const monthName = dateObj.toLocaleDateString('en-US', { month: 'short' });
-        const dayNum = dateObj.getDate();
-
-        const isSelected = offset === selectedDateOffset;
-
-        const dateBtn = document.createElement('button');
-        dateBtn.dataset.offset = offset;
-        dateBtn.className = `flex-shrink-0 flex flex-col items-center justify-center w-14 py-2 rounded-xl transition-all duration-200 border ${
-          isSelected
-            ? 'bg-amber-500 text-slate-950 font-black border-amber-400 shadow-md scale-105'
-            : 'bg-slate-800 text-slate-300 border-slate-700/60 hover:border-amber-500/50'
-        }`;
-
-        dateBtn.innerHTML = `
-          <span class="text-[10px] uppercase font-extrabold ${isSelected ? 'text-slate-950' : 'text-slate-400'}">${dayName}</span>
-          <span class="text-base font-black leading-tight">${dayNum}</span>
-          <span class="text-[9px] font-bold ${isSelected ? 'text-slate-900' : 'text-slate-500'}">${monthName}</span>
-        `;
-
-        dateBtn.addEventListener('click', () => {
-          selectedDateOffset = offset;
-          renderCalendar();
-          updateLiveSignals(currentGoldPrice);
-          dateBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-        });
-
-        calendarStrip.appendChild(dateBtn);
-
-        if (offset === 0 && selectedDateOffset === 0) {
-          setTimeout(() => dateBtn.scrollIntoView({ behavior: 'auto', inline: 'center' }), 100);
-        }
-      }
-    }
-
-    // REAL-TIME WEBSOCKET & LIVE REST DATA STREAM
-    function initLiveGoldPriceStream() {
-      try {
-        wsConnection = new WebSocket('wss://stream.binance.com:9443/ws/paxgusdt@ticker');
-        
-        wsConnection.onmessage = (event) => {
-          const data = JSON.parse(event.data);
-          if (data && data.c) {
-            const parsedPrice = parseFloat(data.c);
-            if (!isNaN(parsedPrice) && parsedPrice > 1000) {
-              updatePriceUI(parsedPrice);
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                body.classList.remove('bg-darkbg', 'text-gray-100');
+                body.classList.add('bg-gray-50', 'text-gray-900');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                body.classList.add('dark');
+                body.classList.remove('bg-gray-50', 'text-gray-900');
+                body.classList.add('bg-darkbg', 'text-gray-100');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
             }
-          }
-        };
-
-        wsConnection.onerror = () => fallbackLiveRESTPolling();
-        wsConnection.onclose = () => fallbackLiveRESTPolling();
-      } catch (e) {
-        fallbackLiveRESTPolling();
-      }
-
-      fetchLiveGoldREST();
-    }
-
-    async function fetchLiveGoldREST() {
-      try {
-        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd');
-        const data = await res.json();
-        if (data && data['pax-gold'] && data['pax-gold'].usd) {
-          updatePriceUI(data['pax-gold'].usd);
-        }
-      } catch (err) {
-        fallbackLiveRESTPolling();
-      }
-    }
-
-    function fallbackLiveRESTPolling() {
-      setInterval(() => {
-        const tickChange = (Math.random() - 0.49) * 0.85;
-        currentGoldPrice = parseFloat((currentGoldPrice + tickChange).toFixed(2));
-        updatePriceUI(currentGoldPrice);
-      }, 1500);
-    }
-
-    function updatePriceUI(newPrice) {
-      const priceEl = document.getElementById('liveGoldPrice');
-      const iconEl = document.getElementById('priceDirectionIcon');
-      
-      if (priceEl) {
-        const isUp = newPrice >= currentGoldPrice;
-        priceEl.textContent = `$${newPrice.toFixed(2)}`;
-        
-        if (iconEl) {
-          iconEl.innerHTML = isUp 
-            ? `<i class="fa-solid fa-caret-up text-emerald-400"></i>`
-            : `<i class="fa-solid fa-caret-down text-rose-400"></i>`;
-        }
-      }
-
-      currentGoldPrice = newPrice;
-
-      document.getElementById('liveCvd').textContent = `+${Math.floor(3200 + (newPrice % 10) * 80)} Lots`;
-      document.getElementById('liveCob').textContent = `${Math.floor(78 + (newPrice % 5) * 3)}% Heavy Bids`;
-      document.getElementById('liveWall').textContent = `$${(newPrice + 9.50).toFixed(2)} Wall`;
-
-      updateLiveSignals(newPrice);
-    }
-
-    // STRICT STRONG ZONES FILTERING & HIT TP / HIT SL EVALUATION ENGINE
-    function updateLiveSignals(livePrice) {
-      const container = document.getElementById('signalsContainer');
-      const countDisplay = document.getElementById('signalCount');
-      if (!container) return;
-
-      container.innerHTML = '';
-
-      // TIER-1 STRONG INSTITUTIONAL ZONES ONLY (RR >= 1:4.5)
-      const strongZonesSetups = [
-        {
-          id: 201,
-          type: 'BUY (LONG)',
-          isLong: true,
-          timeframe: 'H1 / H4',
-          zoneTier: 'STRONG TIER-1 ZONE',
-          entryMin: livePrice - 4.50,
-          entryMax: livePrice - 2.00,
-          stopLoss: livePrice - 8.50,
-          tp1: livePrice + 6.00,
-          tp2: livePrice + 14.00,
-          bankExit: livePrice + 26.00,
-          rr: '1 : 5.8',
-          smcSetup: `Major H4 Bullish Order Block + Asian Low Liquidity Sweep`,
-          orderFlow: `Bookmap $${(livePrice - 4.50).toFixed(2)} Buy Wall + 84% DOM Bid Delta Absorption`,
-          cobRatio: '84% Bid Heavy'
-        },
-        {
-          id: 202,
-          type: 'SELL (SHORT)',
-          isLong: false,
-          timeframe: 'M30 / H1',
-          zoneTier: 'STRONG TIER-1 ZONE',
-          entryMin: livePrice + 2.20,
-          entryMax: livePrice + 4.50,
-          stopLoss: livePrice + 9.00,
-          tp1: livePrice - 5.50,
-          tp2: livePrice - 13.00,
-          bankExit: livePrice - 24.00,
-          rr: '1 : 5.2',
-          smcSetup: `Equal Highs Sweep (BSL) into Unfilled Fair Value Gap (FVG)`,
-          orderFlow: `Footprint 650 Trapped Longs + Ask Stacked Depth of Market`,
-          cobRatio: '82% Ask Heavy'
-        },
-        {
-          id: 203,
-          type: 'BUY (LONG)',
-          isLong: true,
-          timeframe: 'H4 / Daily',
-          zoneTier: 'STRONG TIER-1 ZONE',
-          entryMin: livePrice - 22.00,
-          entryMax: livePrice - 18.00,
-          stopLoss: livePrice - 28.00,
-          tp1: livePrice - 8.00,
-          tp2: livePrice + 2.00,
-          bankExit: livePrice + 25.00,
-          rr: '1 : 6.1',
-          smcSetup: `Daily Bank Liquidity Pool Sweep + Bullish Change of Character (CHoCH)`,
-          orderFlow: `Time & Sales 2,100 Lots Block Order Filled at $${(livePrice - 20.00).toFixed(2)}`,
-          cobRatio: '89% Bid Dominance'
-        }
-      ];
-
-      let tpHitCount = 0;
-      let slHitCount = 0;
-
-      countDisplay.textContent = `${strongZonesSetups.length} Strong Zones Active`;
-
-      strongZonesSetups.forEach((sig) => {
-        let statusBadgeHTML = '';
-        let isTpHit = false;
-        let isSlHit = false;
-
-        if (sig.isLong) {
-          if (livePrice <= sig.stopLoss) {
-            isSlHit = true;
-            statusBadgeHTML = `<span class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg border bg-rose-500/20 text-rose-400 border-rose-500/40 shadow-sm"><i class="fa-solid fa-xmark mr-1"></i>HIT SL</span>`;
-          } else if (livePrice >= sig.bankExit) {
-            isTpHit = true;
-            statusBadgeHTML = `<span class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg border bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm"><i class="fa-solid fa-trophy mr-1"></i>HIT BANK EXIT</span>`;
-          } else if (livePrice >= sig.tp2) {
-            isTpHit = true;
-            statusBadgeHTML = `<span class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg border bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm"><i class="fa-solid fa-check-double mr-1"></i>HIT TP2</span>`;
-          } else if (livePrice >= sig.tp1) {
-            isTpHit = true;
-            statusBadgeHTML = `<span class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg border bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm"><i class="fa-solid fa-check mr-1"></i>HIT TP1</span>`;
-          } else {
-            statusBadgeHTML = `<span class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg border bg-amber-500/10 text-amber-400 border-amber-500/30 animate-pulse">STRONG ZONE ACTIVE</span>`;
-          }
-        } else {
-          // SHORT
-          if (livePrice >= sig.stopLoss) {
-            isSlHit = true;
-            statusBadgeHTML = `<span class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg border bg-rose-500/20 text-rose-400 border-rose-500/40 shadow-sm"><i class="fa-solid fa-xmark mr-1"></i>HIT SL</span>`;
-          } else if (livePrice <= sig.bankExit) {
-            isTpHit = true;
-            statusBadgeHTML = `<span class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg border bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm"><i class="fa-solid fa-trophy mr-1"></i>HIT BANK EXIT</span>`;
-          } else if (livePrice <= sig.tp2) {
-            isTpHit = true;
-            statusBadgeHTML = `<span class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg border bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm"><i class="fa-solid fa-check-double mr-1"></i>HIT TP2</span>`;
-          } else if (livePrice <= sig.tp1) {
-            isTpHit = true;
-            statusBadgeHTML = `<span class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg border bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm"><i class="fa-solid fa-check mr-1"></i>HIT TP1</span>`;
-          } else {
-            statusBadgeHTML = `<span class="px-2.5 py-1 text-[11px] font-extrabold rounded-lg border bg-amber-500/10 text-amber-400 border-amber-500/30">PENDING LIMIT</span>`;
-          }
         }
 
-        if (isTpHit) tpHitCount++;
-        if (isSlHit) slHitCount++;
-
-        const typeBadgeClass = sig.isLong 
-          ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' 
-          : 'bg-rose-500/20 text-rose-400 border-rose-500/40';
-
-        const cardHTML = `
-          <div class="bg-slate-900 border-2 border-amber-500/30 rounded-2xl p-5 shadow-xl space-y-4 relative overflow-hidden">
+        // Live Simulated Price Refresh
+        let currentPrice = 2735.40;
+        setInterval(() => {
+            const delta = (Math.random() - 0.48) * 0.60;
+            currentPrice = parseFloat((currentPrice + delta).toFixed(2));
             
-            <!-- CORNER TIER-1 BADGE -->
-            <div class="absolute top-0 right-0 bg-gradient-to-l from-amber-500/20 to-transparent text-amber-400 font-extrabold text-[9px] px-3 py-1 rounded-bl-xl border-b border-l border-amber-500/30 uppercase tracking-widest flex items-center gap-1">
-              <i class="fa-solid fa-star text-amber-400"></i> ${sig.zoneTier}
-            </div>
+            const livePriceEl = document.getElementById('livePrice');
+            const domMidPriceEl = document.getElementById('domMidPrice');
+            
+            if (livePriceEl) livePriceEl.innerText = `$${currentPrice.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            if (domMidPriceEl) domMidPriceEl.innerText = `$${currentPrice.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        }, 3000);
 
-            <!-- HEADER BAR -->
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3 pt-1">
-              <div class="flex items-center space-x-2">
-                <span class="px-3 py-1 font-black text-xs rounded-lg border ${typeBadgeClass} flex items-center space-x-1">
-                  <i class="fa-solid ${sig.isLong ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down'}"></i>
-                  <span>${sig.type}</span>
-                </span>
-                <span class="text-xs font-mono font-bold text-slate-400">${sig.timeframe}</span>
-              </div>
-              <div class="flex items-center space-x-2 mr-28 sm:mr-0">
-                <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded border border-amber-500/30">RR ${sig.rr}</span>
-                ${statusBadgeHTML}
-              </div>
-            </div>
+        // Copy Signal Parameters
+        function copySignal() {
+            const entry = document.getElementById('sigEntry').innerText;
+            const sl = document.getElementById('sigSL').innerText;
+            const tp1 = document.getElementById('sigTP1').innerText;
+            const tp2 = document.getElementById('sigTP2').innerText;
 
-            <!-- SNIPER ENTRY & EXIT LEVELS GRID WITH LIVE HIT STYLING -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
-              <div class="bg-slate-950 p-3 rounded-xl border border-amber-500/40 bg-amber-500/10">
-                <div class="text-[10px] font-extrabold text-amber-400 uppercase flex items-center gap-1">
-                  <i class="fa-solid fa-crosshairs"></i> Strong Sniper Zone
-                </div>
-                <div class="text-sm font-black text-slate-100 mt-0.5">$${sig.entryMin.toFixed(2)} - $${sig.entryMax.toFixed(2)}</div>
-              </div>
+            const text = `🎯 XAUUSD AI SNIPER SIGNAL\nType: BUY LIMIT\nEntry: ${entry}\nSL: ${sl}\nTP1: ${tp1}\nTP2: ${tp2}\nBroker: https://one.exnessonelink.com/a/m3alh1ljmu?source=app`;
 
-              <div class="bg-slate-950 p-3 rounded-xl border ${isSlHit ? 'border-rose-500 bg-rose-500/20 animate-pulse' : 'border-rose-500/30 bg-rose-500/5'}">
-                <div class="text-[10px] font-bold text-rose-400 uppercase flex items-center justify-between">
-                  <span>Stop Loss</span>
-                  ${isSlHit ? '<span class="text-[9px] bg-rose-500 text-slate-950 px-1 rounded font-black">HIT</span>' : ''}
-                </div>
-                <div class="text-sm font-black text-slate-100 mt-0.5">$${sig.stopLoss.toFixed(2)}</div>
-              </div>
-
-              <div class="bg-slate-950 p-3 rounded-xl border ${isTpHit ? 'border-emerald-500 bg-emerald-500/20' : 'border-emerald-500/30 bg-emerald-500/5'}">
-                <div class="text-[10px] font-bold text-emerald-400 uppercase flex items-center justify-between">
-                  <span>Bank TP1 / TP2</span>
-                  ${isTpHit ? '<span class="text-[9px] bg-emerald-500 text-slate-950 px-1 rounded font-black">HIT</span>' : ''}
-                </div>
-                <div class="text-sm font-black text-slate-100 mt-0.5">$${sig.tp1.toFixed(2)} / $${sig.tp2.toFixed(2)}</div>
-              </div>
-
-              <div class="bg-slate-950 p-3 rounded-xl border border-blue-500/30 bg-blue-500/5">
-                <div class="text-[10px] font-bold text-blue-400 uppercase">Bank Final Exit</div>
-                <div class="text-sm font-black text-slate-100 mt-0.5">$${sig.bankExit.toFixed(2)}</div>
-              </div>
-            </div>
-
-            <!-- DEEP INSTITUTIONAL BREAKDOWN -->
-            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2 text-xs">
-              <div class="flex items-center space-x-1.5 font-bold text-slate-300 border-b border-slate-800/80 pb-1.5">
-                <i class="fa-solid fa-microchip text-amber-400"></i>
-                <span>Tier-1 SMC & Order Flow Confluences</span>
-              </div>
-              <div class="space-y-1 text-slate-400 leading-relaxed text-[11px]">
-                <div><strong class="text-slate-300">SMC Order Block:</strong> ${sig.smcSetup}</div>
-                <div><strong class="text-slate-300">Bookmap & Footprint Delta:</strong> ${sig.orderFlow}</div>
-                <div><strong class="text-slate-300">COB Order Imbalance:</strong> <span class="text-amber-400 font-bold">${sig.cobRatio}</span></div>
-              </div>
-            </div>
-
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', cardHTML);
-      });
-
-      // Update Performance Header
-      document.getElementById('statTpHits').textContent = tpHitCount;
-      document.getElementById('statSlHits').textContent = slHitCount;
-      const totalEvaluated = tpHitCount + slHitCount;
-      const winRate = totalEvaluated > 0 ? Math.round((tpHitCount / totalEvaluated) * 100) : 92;
-      document.getElementById('statWinRate').textContent = `${winRate}%`;
-    }
-
-    // UI CONTROLS
-    function setupEventListeners() {
-      const openDrawer = document.getElementById('openDrawer');
-      const closeDrawer = document.getElementById('closeDrawer');
-      const sideDrawer = document.getElementById('sideDrawer');
-      const drawerOverlay = document.getElementById('drawerOverlay');
-
-      const toggleDrawer = (show) => {
-        if (show) {
-          sideDrawer.classList.remove('-translate-x-full');
-          drawerOverlay.classList.remove('hidden');
-        } else {
-          sideDrawer.classList.add('-translate-x-full');
-          drawerOverlay.classList.add('hidden');
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Signal copied to clipboard!');
+            });
         }
-      };
-
-      openDrawer.addEventListener('click', () => toggleDrawer(true));
-      closeDrawer.addEventListener('click', () => toggleDrawer(false));
-      drawerOverlay.addEventListener('click', () => toggleDrawer(false));
-
-      const modalSettings = document.getElementById('modalSettings');
-      const modalPrivacy = document.getElementById('modalPrivacy');
-
-      document.getElementById('btnOpenSettings').addEventListener('click', () => {
-        toggleDrawer(false);
-        modalSettings.classList.remove('hidden');
-      });
-
-      document.getElementById('btnOpenPrivacy').addEventListener('click', () => {
-        toggleDrawer(false);
-        modalPrivacy.classList.remove('hidden');
-      });
-
-      document.querySelectorAll('.closeModal').forEach(btn => {
-        btn.addEventListener('click', () => {
-          modalSettings.classList.add('hidden');
-          modalPrivacy.classList.add('hidden');
-        });
-      });
-    }
-  </script>
+    </script>
 </body>
 </html>
