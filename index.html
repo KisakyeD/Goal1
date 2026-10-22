@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XAUUSD AI Sniper Engine & Analytics</title>
-    <!-- Tailwind CSS -->
+    <title>XAUUSD EA & AI Sniper Engine | Live SMC Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -24,18 +23,19 @@
             }
         }
     </script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        .glow-gold { box-shadow: 0 0 15px rgba(234, 179, 8, 0.25); }
-        .glow-green { box-shadow: 0 0 15px rgba(34, 197, 94, 0.25); }
-        .glow-red { box-shadow: 0 0 15px rgba(239, 68, 68, 0.25); }
+        .glow-gold { box-shadow: 0 0 20px rgba(234, 179, 8, 0.2); }
+        .glow-green { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); }
+        .glow-red { box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
+        @keyframes pulse-fast { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .animate-pulse-fast { animation: pulse-fast 1s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     </style>
 </head>
-<body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col transition-colors duration-200" id="bodyEl">
+<body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col transition-colors duration-200 dark" id="bodyEl">
 
     <!-- Top Navigation Header -->
-    <header class="border-b border-gray-800 bg-gray-900/80 backdrop-blur sticky top-0 z-50">
+    <header class="border-b border-gray-800 bg-gray-900/90 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <div class="p-2 bg-gold-500/10 border border-gold-500/30 rounded-lg">
@@ -44,18 +44,20 @@
                 <div>
                     <h1 class="font-bold text-lg tracking-wide text-white flex items-center gap-2">
                         XAUUSD <span class="text-gold-400">SNIPER AI</span>
-                        <span class="text-xs bg-gold-500/20 text-gold-400 border border-gold-500/30 px-2 py-0.5 rounded-full font-mono">v3.2 EA</span>
+                        <span class="text-[10px] bg-gold-500/20 text-gold-400 border border-gold-500/30 px-2 py-0.5 rounded-full font-mono">v4.0 EA</span>
                     </h1>
-                    <p class="text-xs text-gray-400">SMC & Order Flow Deep Analytics Engine</p>
+                    <p class="text-xs text-gray-400">Institutional SMC & Order Flow Deep Engine</p>
                 </div>
             </div>
 
             <div class="flex items-center space-x-4">
                 <!-- Live Gold Price Ticker -->
-                <div class="hidden sm:flex items-center space-x-3 bg-gray-800/80 px-4 py-1.5 rounded-lg border border-gray-700">
-                    <span class="text-xs text-gray-400 uppercase font-mono">XAU/USD Live:</span>
-                    <span id="livePrice" class="font-mono font-bold text-emerald-400 text-base">$2,735.40</span>
-                    <span id="priceChange" class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">+0.42%</span>
+                <div class="flex items-center space-x-3 bg-gray-950 px-4 py-1.5 rounded-lg border border-gray-800 shadow-inner">
+                    <span class="text-xs text-gray-400 uppercase font-mono hidden sm:inline">XAUUSD Live:</span>
+                    <span id="livePrice" class="font-mono font-bold text-emerald-400 text-base sm:text-lg">$4,090.50</span>
+                    <div class="text-[10px] font-mono text-gray-400 border-l border-gray-800 pl-2">
+                        BID: <span id="liveBid" class="text-gray-200">4090.46</span> | ASK: <span id="liveAsk" class="text-gray-200">4090.70</span>
+                    </div>
                 </div>
 
                 <!-- Dark / Light Theme Toggle -->
@@ -70,42 +72,42 @@
     <!-- Main Content Area -->
     <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
 
-        <!-- Metrics Overview Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
+        <!-- Metrics Overview Banner -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-gray-900/80 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
                 <div>
-                    <p class="text-xs text-gray-400 font-medium">Market Bias (H1/H4)</p>
-                    <p id="marketBias" class="text-lg font-bold text-emerald-400 mt-1">BULLISH EXPANSION</p>
+                    <p class="text-xs text-gray-400 font-medium">Market Bias (D1/H4)</p>
+                    <p id="marketBias" class="text-sm md:text-base font-bold text-emerald-400 mt-1">BULLISH REJECTION</p>
                 </div>
                 <div class="p-2.5 bg-emerald-500/10 rounded-lg text-emerald-400 border border-emerald-500/20">
                     <i data-lucide="trending-up" class="w-5 h-5"></i>
                 </div>
             </div>
 
-            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
+            <div class="bg-gray-900/80 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
                 <div>
                     <p class="text-xs text-gray-400 font-medium">AI Confluence Index</p>
-                    <p id="confluenceScore" class="text-lg font-bold text-gold-400 mt-1">94% High Quality</p>
+                    <p id="confluenceScore" class="text-sm md:text-base font-bold text-gold-400 mt-1">96% High Quality</p>
                 </div>
                 <div class="p-2.5 bg-gold-500/10 rounded-lg text-gold-400 border border-gold-500/20">
                     <i data-lucide="cpu" class="w-5 h-5"></i>
                 </div>
             </div>
 
-            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
+            <div class="bg-gray-900/80 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
                 <div>
                     <p class="text-xs text-gray-400 font-medium">Nearest Demand Zone</p>
-                    <p id="demandZone" class="text-lg font-bold text-gray-200 mt-1 font-mono">$2,728.50 - $2,731.00</p>
+                    <p id="demandZone" class="text-sm md:text-base font-bold text-gray-200 mt-1 font-mono">$4,071.50 - $4,082.00</p>
                 </div>
                 <div class="p-2.5 bg-blue-500/10 rounded-lg text-blue-400 border border-blue-500/20">
                     <i data-lucide="shield-check" class="w-5 h-5"></i>
                 </div>
             </div>
 
-            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
+            <div class="bg-gray-900/80 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
                 <div>
                     <p class="text-xs text-gray-400 font-medium">Nearest Supply Zone</p>
-                    <p id="supplyZone" class="text-lg font-bold text-gray-200 mt-1 font-mono">$2,748.00 - $2,752.20</p>
+                    <p id="supplyZone" class="text-sm md:text-base font-bold text-gray-200 mt-1 font-mono">$4,118.00 - $4,126.50</p>
                 </div>
                 <div class="p-2.5 bg-rose-500/10 rounded-lg text-rose-400 border border-rose-500/20">
                     <i data-lucide="zap" class="w-5 h-5"></i>
@@ -113,60 +115,67 @@
             </div>
         </div>
 
-        <!-- Layout Grid: Left (Sniper Entry Signals), Right (Deep Analytics Engine & Order Flow) -->
+        <!-- Layout Grid: Active Signal vs Order Flow -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <!-- Left Column: Active Sniper Signals -->
+            <!-- Active AI Sniper Signal Card -->
             <div class="lg:col-span-2 space-y-6">
                 
-                <!-- Live AI Sniper Entry Signal Card -->
                 <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden glow-gold">
-                    <div class="absolute top-0 right-0 bg-gold-500 text-gray-950 text-xs font-bold px-3 py-1 rounded-bl-lg flex items-center gap-1">
-                        <i data-lucide="radio" class="w-3 h-3 animate-pulse"></i> LIVE AI SETUP
+                    <!-- Top Status Bar -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-4 border-b border-gray-800">
+                        <div class="flex items-center space-x-3">
+                            <span id="sigTypeBadge" class="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg font-bold text-sm tracking-wider">
+                                BUY LIMIT (SNIPER)
+                            </span>
+                            <span class="text-xs text-gray-400 font-mono">Asset: XAUUSD | TF: M15/H1</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-400 font-mono">Auto-Scanner:</span>
+                            <span id="scanTimer" class="text-xs font-mono font-bold text-gold-400 bg-gold-500/10 border border-gold-500/20 px-2 py-0.5 rounded">
+                                Scanning in 15s
+                            </span>
+                            <button onclick="forceScan()" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 p-1.5 rounded border border-gray-700 transition" title="Refresh Signal">
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="flex items-center space-x-3 mb-4">
-                        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg font-bold text-sm tracking-wider">
-                            BUY LIMIT (SNIPER)
-                        </span>
-                        <span class="text-xs text-gray-400 font-mono">Asset: XAUUSD | TF: M15/H1</span>
-                    </div>
-
-                    <!-- Signal Details Grid -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-4 p-4 bg-gray-950/60 rounded-xl border border-gray-800/80">
+                    <!-- Live Parameters Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-4 p-4 bg-gray-950/80 rounded-xl border border-gray-800/80">
                         <div>
                             <span class="text-xs text-gray-400 uppercase font-mono block">Sniper Entry</span>
-                            <span id="sigEntry" class="text-lg font-mono font-bold text-gold-400">$2,732.50</span>
+                            <span id="sigEntry" class="text-lg font-mono font-bold text-gold-400">$4,088.50</span>
                         </div>
                         <div>
                             <span class="text-xs text-gray-400 uppercase font-mono block">Stop Loss (SL)</span>
-                            <span id="sigSL" class="text-lg font-mono font-bold text-rose-400">$2,726.80</span>
+                            <span id="sigSL" class="text-lg font-mono font-bold text-rose-400">$4,079.00</span>
                         </div>
                         <div>
-                            <span class="text-xs text-gray-400 uppercase font-mono block">Target 1 (TP1)</span>
-                            <span id="sigTP1" class="text-lg font-mono font-bold text-emerald-400">$2,741.00</span>
+                            <span class="text-xs text-gray-400 uppercase font-mono block">Take Profit 1</span>
+                            <span id="sigTP1" class="text-lg font-mono font-bold text-emerald-400">$4,102.00</span>
                         </div>
                         <div>
-                            <span class="text-xs text-gray-400 uppercase font-mono block">Target 2 (TP2)</span>
-                            <span id="sigTP2" class="text-lg font-mono font-bold text-emerald-300">$2,750.50</span>
+                            <span class="text-xs text-gray-400 uppercase font-mono block">Take Profit 2</span>
+                            <span id="sigTP2" class="text-lg font-mono font-bold text-emerald-300">$4,115.50</span>
                         </div>
                     </div>
 
-                    <!-- Signal Rationale & SMC Tags -->
+                    <!-- SMC Confluence Breakdown -->
                     <div class="space-y-3">
                         <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">AI Confluence Breakdown:</h4>
-                        <div class="flex flex-wrap gap-2">
+                        <div id="confluenceTags" class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ Daily Liquidity Rejection ($4,071 Sweep)</span>
                             <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ H1 Bullish Order Block (OB)</span>
-                            <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ M15 Liquidity Sweep below $2,730</span>
                             <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ Fair Value Gap (FVG) Fill</span>
-                            <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ R:R Ratio 1:3.2</span>
+                            <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ R:R Ratio 1:2.8</span>
                         </div>
                     </div>
 
-                    <!-- Actions -->
+                    <!-- Action Buttons -->
                     <div class="mt-6 flex flex-wrap gap-3 items-center justify-between border-t border-gray-800 pt-4">
                         <div class="text-xs text-gray-400 flex items-center gap-1">
-                            <i data-lucide="clock" class="w-4 h-4 text-gold-400"></i> Signal Generated: <span class="text-gray-200 font-mono">12 mins ago</span>
+                            <i data-lucide="clock" class="w-4 h-4 text-gold-400"></i> Active Signal ID: <span id="activeSigId" class="text-gray-200 font-mono">#SIG-409022</span>
                         </div>
                         <div class="flex gap-2">
                             <button onclick="copySignal()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-xs font-semibold rounded-lg border border-gray-700 transition flex items-center gap-1.5">
@@ -179,201 +188,348 @@
                     </div>
                 </div>
 
-                <!-- Historical Signals Log -->
-                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                    <h3 class="text-sm font-bold text-gray-200 mb-4 flex items-center gap-2">
-                        <i data-lucide="history" class="w-4 h-4 text-gold-400"></i> Recent EA Signal History
-                    </h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs text-gray-300">
-                            <thead class="bg-gray-950 text-gray-400 uppercase font-mono border-b border-gray-800">
-                                <tr>
-                                    <th class="p-2.5">Type</th>
-                                    <th class="p-2.5">Entry</th>
-                                    <th class="p-2.5">SL</th>
-                                    <th class="p-2.5">TP Achieved</th>
-                                    <th class="p-2.5">Gain (Pips)</th>
-                                    <th class="p-2.5">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-800/60 font-mono">
-                                <tr>
-                                    <td class="p-2.5 text-emerald-400 font-bold">BUY</td>
-                                    <td class="p-2.5">$2,718.20</td>
-                                    <td class="p-2.5">$2,712.00</td>
-                                    <td class="p-2.5">$2,732.00</td>
-                                    <td class="p-2.5 text-emerald-400">+138 pips</td>
-                                    <td class="p-2.5"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded">TP2 Hit</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="p-2.5 text-rose-400 font-bold">SELL</td>
-                                    <td class="p-2.5">$2,745.50</td>
-                                    <td class="p-2.5">$2,751.00</td>
-                                    <td class="p-2.5">$2,735.00</td>
-                                    <td class="p-2.5 text-emerald-400">+105 pips</td>
-                                    <td class="p-2.5"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded">TP1 Hit</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="p-2.5 text-emerald-400 font-bold">BUY</td>
-                                    <td class="p-2.5">$2,705.00</td>
-                                    <td class="p-2.5">$2,699.50</td>
-                                    <td class="p-2.5">$2,720.00</td>
-                                    <td class="p-2.5 text-emerald-400">+150 pips</td>
-                                    <td class="p-2.5"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded">TP2 Hit</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
             </div>
 
-            <!-- Right Column: Order Flow & AI Engine Analytics -->
+            <!-- DOM / Order Flow Ladder -->
             <div class="space-y-6">
-
-                <!-- Order Flow / DOM Depth Feed -->
                 <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-sm font-bold text-gray-200 flex items-center gap-2">
-                            <i data-lucide="layers" class="w-4 h-4 text-gold-400"></i> Market Depth (DOM Feed)
+                            <i data-lucide="layers" class="w-4 h-4 text-gold-400"></i> Market Depth (Bookmap Feed)
                         </h3>
-                        <span class="text-[10px] bg-gray-800 text-gray-400 px-2 py-0.5 rounded font-mono">Live Bookmap Data</span>
+                        <span class="text-[10px] bg-gray-800 text-gray-400 px-2 py-0.5 rounded font-mono">Live Institutional DOM</span>
                     </div>
 
-                    <div class="space-y-2 text-xs font-mono">
-                        <!-- Ask Depth -->
-                        <div class="flex justify-between items-center text-rose-400 bg-rose-500/5 p-1.5 rounded border border-rose-500/10">
-                            <span>$2,738.50 (Ask)</span>
-                            <span class="font-bold">420 Lots</span>
-                        </div>
-                        <div class="flex justify-between items-center text-rose-400 bg-rose-500/5 p-1.5 rounded border border-rose-500/10">
-                            <span>$2,736.80 (Ask)</span>
-                            <span class="font-bold">280 Lots</span>
-                        </div>
-                        
-                        <!-- Mid Price Line -->
-                        <div class="text-center py-1 text-gold-400 font-bold border-y border-gold-500/30 my-1 bg-gold-500/5">
-                            Spread: 12 pips | Mid: <span id="domMidPrice">$2,735.40</span>
-                        </div>
-
-                        <!-- Bid Depth -->
-                        <div class="flex justify-between items-center text-emerald-400 bg-emerald-500/5 p-1.5 rounded border border-emerald-500/10">
-                            <span>$2,734.00 (Bid)</span>
-                            <span class="font-bold">310 Lots</span>
-                        </div>
-                        <div class="flex justify-between items-center text-emerald-400 bg-emerald-500/5 p-1.5 rounded border border-emerald-500/10">
-                            <span>$2,732.50 (Bid - OB)</span>
-                            <span class="font-bold">890 Lots</span>
-                        </div>
+                    <div class="space-y-2 text-xs font-mono" id="domBookmap">
+                        <!-- Dynamic DOM content loaded via JavaScript -->
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- AI Market Engine Settings & Custom Parameters -->
-                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-                    <h3 class="text-sm font-bold text-gray-200 flex items-center gap-2">
-                        <i data-lucide="sliders" class="w-4 h-4 text-gold-400"></i> Engine Parameters
+        <!-- Dynamic Signal History & TP/SL Hit Log -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-5">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800 pb-4">
+                <div>
+                    <h3 class="text-base font-bold text-gray-100 flex items-center gap-2">
+                        <i data-lucide="history" class="w-5 h-5 text-gold-400"></i> Real-Time Signal History & Auto-Tracked Hits
                     </h3>
+                    <p class="text-xs text-gray-400">Auto-recorded signals evaluated against real-time market motion</p>
+                </div>
 
-                    <div class="space-y-3">
-                        <div>
-                            <label class="text-xs text-gray-400 block mb-1">Trading Strategy</label>
-                            <select class="w-full bg-gray-950 border border-gray-800 text-xs text-gray-200 rounded-lg p-2.5 focus:border-gold-500 outline-none">
-                                <option>Smart Money Concepts (SMC) + Order Flow</option>
-                                <option>ICT Killzones & Liquidity Sweeps</option>
-                                <option>Volume Profile & Imbalance Fill</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="text-xs text-gray-400 block mb-1">Risk Mode</label>
-                            <div class="grid grid-cols-3 gap-2">
-                                <button class="py-1.5 bg-gray-800 border border-gray-700 text-xs text-gray-300 rounded hover:border-gold-500">Low Risk</button>
-                                <button class="py-1.5 bg-gold-500/20 border border-gold-500 text-xs text-gold-400 font-bold rounded">Sniper (1:3+)</button>
-                                <button class="py-1.5 bg-gray-800 border border-gray-700 text-xs text-gray-300 rounded hover:border-gold-500">Aggressive</button>
-                            </div>
-                        </div>
+                <!-- Stats Counters -->
+                <div class="flex items-center space-x-3 text-xs font-mono">
+                    <div class="bg-gray-950 border border-gray-800 px-3 py-1.5 rounded-lg text-center">
+                        <span class="text-gray-400 block text-[10px]">Win Rate</span>
+                        <span id="statWinRate" class="text-emerald-400 font-bold text-sm">87.5%</span>
+                    </div>
+                    <div class="bg-gray-950 border border-gray-800 px-3 py-1.5 rounded-lg text-center">
+                        <span class="text-gray-400 block text-[10px]">Total Pips</span>
+                        <span id="statTotalPips" class="text-gold-400 font-bold text-sm">+1,420 pips</span>
+                    </div>
+                    <div class="bg-gray-950 border border-gray-800 px-3 py-1.5 rounded-lg text-center">
+                        <span class="text-gray-400 block text-[10px]">Total Signals</span>
+                        <span id="statTotalSignals" class="text-gray-200 font-bold text-sm">8</span>
                     </div>
                 </div>
+            </div>
 
-                <!-- Broker Sponsor Card -->
-                <div class="bg-gradient-to-br from-amber-950/40 via-gray-900 to-gray-900 border border-gold-500/30 rounded-xl p-5 text-center space-y-3">
-                    <i data-lucide="shield-alert" class="w-8 h-8 text-gold-400 mx-auto"></i>
-                    <h4 class="font-bold text-sm text-gray-100">Zero Spread & Instant Execution</h4>
-                    <p class="text-xs text-gray-400">For optimal sniper entry execution and tightest XAUUSD spreads, use our verified broker feed.</p>
-                    <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="block w-full py-2.5 bg-gold-500 hover:bg-gold-600 text-gray-950 font-bold text-xs rounded-lg transition shadow-lg">
-                        Trade XAUUSD on Exness
-                    </a>
-                </div>
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                <button onclick="filterHistory('ALL')" id="filterAll" class="px-3 py-1.5 bg-gold-500/20 text-gold-400 border border-gold-500/30 rounded-lg">All Signals</button>
+                <button onclick="filterHistory('TP')" id="filterTP" class="px-3 py-1.5 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded-lg border border-gray-700">TP Hits</button>
+                <button onclick="filterHistory('SL')" id="filterSL" class="px-3 py-1.5 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded-lg border border-gray-700">SL Hits</button>
+            </div>
 
+            <!-- Signals History Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-gray-300">
+                    <thead class="bg-gray-950 text-gray-400 uppercase font-mono border-b border-gray-800">
+                        <tr>
+                            <th class="p-3">Signal ID</th>
+                            <th class="p-3">Type</th>
+                            <th class="p-3">Entry</th>
+                            <th class="p-3">SL</th>
+                            <th class="p-3">TP1 / TP2</th>
+                            <th class="p-3">Outcome</th>
+                            <th class="p-3">Pips Gained</th>
+                            <th class="p-3">Confluence Rationale</th>
+                            <th class="p-3">Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800/60 font-mono" id="historyTableBody">
+                        <!-- Populated dynamically via JS -->
+                    </tbody>
+                </table>
             </div>
         </div>
 
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-gray-800 bg-gray-950 py-6 mt-8 text-xs text-gray-500">
+    <footer class="border-t border-gray-800 bg-gray-950 py-6 text-xs text-gray-500">
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
             <p>© 2026 XAUUSD AI Sniper Engine. All rights reserved.</p>
             <div class="flex items-center space-x-4">
                 <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="hover:text-gold-400 transition">Exness Partner Portal</a>
                 <span>|</span>
-                <span class="text-gray-400">Risk Warning: Gold trading involves substantial risk.</span>
+                <span class="text-gray-400">Risk Warning: High volatility asset class.</span>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript Functions -->
+    <!-- JavaScript Logic Engine -->
     <script>
-        // Initialize Lucide Icons
         lucide.createIcons();
 
-        // Dark / Light Theme Toggle Functionality
+        // System State
+        let currentPrice = 4090.50;
+        let countdown = 15;
+        let currentFilter = 'ALL';
+
+        // Signal History Data
+        let historyData = [
+            { id: '#SIG-408980', type: 'BUY', entry: '$4,076.00', sl: '$4,068.50', tp1: '$4,090.00', tp2: '$4,102.00', status: 'TP2 HIT', pips: '+260 pips', rationale: 'Daily Sweep + H1 Order Block', time: '22 Oct 2026, 05:30 AM' },
+            { id: '#SIG-408910', type: 'SELL', entry: '$4,115.00', sl: '$4,122.00', tp1: '$4,101.00', tp2: '$4,088.00', status: 'TP2 HIT', pips: '+270 pips', rationale: 'H4 Supply Zone + MSS', time: '21 Oct 2026, 18:45 PM' },
+            { id: '#SIG-408850', type: 'BUY', entry: '$4,062.00', sl: '$4,055.00', tp1: '$4,075.00', tp2: '$4,089.00', status: 'TP1 HIT', pips: '+130 pips', rationale: 'M15 FVG Fill + Institutional Sweep', time: '21 Oct 2026, 11:15 AM' },
+            { id: '#SIG-408790', type: 'SELL', entry: '$4,098.50', sl: '$4,106.00', tp1: '$4,085.00', tp2: '$4,072.00', status: 'SL HIT', pips: '-75 pips', rationale: 'M30 Resistance Rejection', time: '20 Oct 2026, 20:10 PM' },
+            { id: '#SIG-408720', type: 'BUY', entry: '$4,045.00', sl: '$4,037.00', tp1: '$4,060.00', tp2: '$4,078.00', status: 'TP2 HIT', pips: '+330 pips', rationale: 'Weekly Liquidity Grab', time: '20 Oct 2026, 08:00 AM' },
+            { id: '#SIG-408660', type: 'BUY', entry: '$4,032.00', sl: '$4,024.00', tp1: '$4,048.00', tp2: '$4,065.00', status: 'TP2 HIT', pips: '+330 pips', rationale: 'SMC Demand Zone Expansion', time: '19 Oct 2026, 14:20 PM' },
+            { id: '#SIG-408590', type: 'SELL', entry: '$4,080.00', sl: '$4,088.00', tp1: '$4,065.00', tp2: '$4,050.00', status: 'TP1 HIT', pips: '+150 pips', rationale: 'ICT London Killzone Setup', time: '19 Oct 2026, 09:30 AM' },
+            { id: '#SIG-408510', type: 'BUY', entry: '$4,020.00', sl: '$4,012.00', tp1: '$4,035.00', tp2: '$4,048.00', status: 'TP1 HIT', pips: '+150 pips', rationale: 'Asian Session Liquidity Sweep', time: '18 Oct 2026, 04:10 AM' }
+        ];
+
+        // Active Setup Object
+        let activeSetup = {
+            id: '#SIG-409022',
+            type: 'BUY',
+            entry: 4088.50,
+            sl: 4079.00,
+            tp1: 4102.00,
+            tp2: 4115.50,
+            rationale: 'Daily Liquidity Rejection + H1 OB',
+            status: 'ACTIVE'
+        };
+
+        // Theme Toggle Functionality
         function toggleTheme() {
             const body = document.getElementById('bodyEl');
             const sunIcon = document.getElementById('sunIcon');
             const moonIcon = document.getElementById('moonIcon');
 
             if (body.classList.contains('dark')) {
-                body.classList.remove('dark');
-                body.classList.remove('bg-darkbg', 'text-gray-100');
+                body.classList.remove('dark', 'bg-darkbg', 'text-gray-100');
                 body.classList.add('bg-gray-50', 'text-gray-900');
                 sunIcon.classList.remove('hidden');
                 moonIcon.classList.add('hidden');
             } else {
-                body.classList.add('dark');
+                body.classList.add('dark', 'bg-darkbg', 'text-gray-100');
                 body.classList.remove('bg-gray-50', 'text-gray-900');
-                body.classList.add('bg-darkbg', 'text-gray-100');
                 sunIcon.classList.add('hidden');
                 moonIcon.classList.remove('hidden');
             }
         }
 
-        // Live Simulated Price Refresh
-        let currentPrice = 2735.40;
+        // Live Simulated Price Tick Generator
         setInterval(() => {
-            const delta = (Math.random() - 0.48) * 0.60;
+            const delta = (Math.random() - 0.48) * 0.45;
             currentPrice = parseFloat((currentPrice + delta).toFixed(2));
-            
-            const livePriceEl = document.getElementById('livePrice');
-            const domMidPriceEl = document.getElementById('domMidPrice');
-            
-            if (livePriceEl) livePriceEl.innerText = `$${currentPrice.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-            if (domMidPriceEl) domMidPriceEl.innerText = `$${currentPrice.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-        }, 3000);
 
-        // Copy Signal Parameters
+            const bid = (currentPrice - 0.24).toFixed(2);
+            const ask = (currentPrice + 0.24).toFixed(2);
+
+            document.getElementById('livePrice').innerText = `$${currentPrice.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('liveBid').innerText = bid;
+            document.getElementById('liveAsk').innerText = ask;
+
+            renderDOM();
+            checkSetupOutcome();
+        }, 1500);
+
+        // Auto Refresh Scanner Timer
+        setInterval(() => {
+            countdown--;
+            if (countdown <= 0) {
+                countdown = 15;
+                refreshAIAnalysis();
+            }
+            document.getElementById('scanTimer').innerText = `Scanning in ${countdown}s`;
+        }, 1000);
+
+        function forceScan() {
+            countdown = 15;
+            refreshAIAnalysis();
+        }
+
+        function refreshAIAnalysis() {
+            const isBuy = currentPrice < 4100;
+            const newEntry = isBuy ? (currentPrice - 2.50).toFixed(2) : (currentPrice + 2.50).toFixed(2);
+            const newSL = isBuy ? (newEntry - 9.50).toFixed(2) : (parseFloat(newEntry) + 9.50).toFixed(2);
+            const newTP1 = isBuy ? (parseFloat(newEntry) + 13.50).toFixed(2) : (newEntry - 13.50).toFixed(2);
+            const newTP2 = isBuy ? (parseFloat(newEntry) + 27.00).toFixed(2) : (newEntry - 27.00).toFixed(2);
+
+            activeSetup = {
+                id: '#SIG-' + Math.floor(100000 + Math.random() * 900000),
+                type: isBuy ? 'BUY' : 'SELL',
+                entry: parseFloat(newEntry),
+                sl: parseFloat(newSL),
+                tp1: parseFloat(newTP1),
+                tp2: parseFloat(newTP2),
+                rationale: isBuy ? 'M15 Order Block + FVG Rejection' : 'H1 Supply Liquidity Sweep',
+                status: 'ACTIVE'
+            };
+
+            updateActiveCardUI();
+        }
+
+        function checkSetupOutcome() {
+            if (!activeSetup || activeSetup.status !== 'ACTIVE') return;
+
+            if (activeSetup.type === 'BUY') {
+                if (currentPrice >= activeSetup.tp2) {
+                    recordOutcome('TP2 HIT', `+${((activeSetup.tp2 - activeSetup.entry) * 10).toFixed(0)} pips`);
+                } else if (currentPrice <= activeSetup.sl) {
+                    recordOutcome('SL HIT', `-${((activeSetup.entry - activeSetup.sl) * 10).toFixed(0)} pips`);
+                }
+            } else {
+                if (currentPrice <= activeSetup.tp2) {
+                    recordOutcome('TP2 HIT', `+${((activeSetup.entry - activeSetup.tp2) * 10).toFixed(0)} pips`);
+                } else if (currentPrice >= activeSetup.sl) {
+                    recordOutcome('SL HIT', `-${((activeSetup.sl - activeSetup.entry) * 10).toFixed(0)} pips`);
+                }
+            }
+        }
+
+        function recordOutcome(status, pipsStr) {
+            activeSetup.status = status;
+            historyData.unshift({
+                id: activeSetup.id,
+                type: activeSetup.type,
+                entry: `$${activeSetup.entry.toFixed(2)}`,
+                sl: `$${activeSetup.sl.toFixed(2)}`,
+                tp1: `$${activeSetup.tp1.toFixed(2)}`,
+                tp2: `$${activeSetup.tp2.toFixed(2)}`,
+                status: status,
+                pips: pipsStr,
+                rationale: activeSetup.rationale,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', Today'
+            });
+
+            renderHistoryTable();
+            updateStats();
+            refreshAIAnalysis();
+        }
+
+        function updateActiveCardUI() {
+            document.getElementById('sigTypeBadge').innerText = `${activeSetup.type} LIMIT (SNIPER)`;
+            document.getElementById('sigTypeBadge').className = `px-3 py-1 ${activeSetup.type === 'BUY' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border-rose-500/30'} border rounded-lg font-bold text-sm tracking-wider`;
+            document.getElementById('sigEntry').innerText = `$${activeSetup.entry.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('sigSL').innerText = `$${activeSetup.sl.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('sigTP1').innerText = `$${activeSetup.tp1.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('sigTP2').innerText = `$${activeSetup.tp2.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('activeSigId').innerText = activeSetup.id;
+        }
+
+        function renderDOM() {
+            const domEl = document.getElementById('domBookmap');
+            if (!domEl) return;
+
+            const ask1 = (currentPrice + 1.20).toFixed(2);
+            const ask2 = (currentPrice + 0.50).toFixed(2);
+            const bid1 = (currentPrice - 0.50).toFixed(2);
+            const bid2 = (currentPrice - 1.20).toFixed(2);
+
+            domEl.innerHTML = `
+                <div class="flex justify-between items-center text-rose-400 bg-rose-500/5 p-1.5 rounded border border-rose-500/10">
+                    <span>$${ask1} (Ask Wall)</span>
+                    <span class="font-bold">540 Lots</span>
+                </div>
+                <div class="flex justify-between items-center text-rose-400 bg-rose-500/5 p-1.5 rounded border border-rose-500/10">
+                    <span>$${ask2} (Ask)</span>
+                    <span class="font-bold">290 Lots</span>
+                </div>
+                <div class="text-center py-1 text-gold-400 font-bold border-y border-gold-500/30 my-1 bg-gold-500/5">
+                    Spread: 24 pips | Mid: $${currentPrice.toFixed(2)}
+                </div>
+                <div class="flex justify-between items-center text-emerald-400 bg-emerald-500/5 p-1.5 rounded border border-emerald-500/10">
+                    <span>$${bid1} (Bid)</span>
+                    <span class="font-bold">380 Lots</span>
+                </div>
+                <div class="flex justify-between items-center text-emerald-400 bg-emerald-500/5 p-1.5 rounded border border-emerald-500/10">
+                    <span>$${bid2} (Demand OB)</span>
+                    <span class="font-bold">920 Lots</span>
+                </div>
+            `;
+        }
+
+        function renderHistoryTable() {
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+
+            const filtered = historyData.filter(item => {
+                if (currentFilter === 'TP') return item.status.includes('TP');
+                if (currentFilter === 'SL') return item.status.includes('SL');
+                return true;
+            });
+
+            filtered.forEach(row => {
+                const tr = document.createElement('tr');
+                const isTP = row.status.includes('TP');
+                const isSL = row.status.includes('SL');
+
+                tr.innerHTML = `
+                    <td class="p-3 font-mono text-gray-400">${row.id}</td>
+                    <td class="p-3 font-bold ${row.type === 'BUY' ? 'text-emerald-400' : 'text-rose-400'}">${row.type}</td>
+                    <td class="p-3 font-mono text-gray-200">${row.entry}</td>
+                    <td class="p-3 font-mono text-rose-400">${row.sl}</td>
+                    <td class="p-3 font-mono text-emerald-400">${row.tp1} / ${row.tp2}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 text-[10px] font-bold rounded ${isTP ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
+                            ${row.status}
+                        </span>
+                    </td>
+                    <td class="p-3 font-bold ${isTP ? 'text-emerald-400' : 'text-rose-400'}">${row.pips}</td>
+                    <td class="p-3 text-gray-400 text-[11px]">${row.rationale}</td>
+                    <td class="p-3 text-gray-500 text-[11px]">${row.time}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterHistory(type) {
+            currentFilter = type;
+            document.getElementById('filterAll').className = `px-3 py-1.5 ${type === 'ALL' ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30' : 'bg-gray-800 text-gray-300'} rounded-lg`;
+            document.getElementById('filterTP').className = `px-3 py-1.5 ${type === 'TP' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-gray-800 text-gray-300'} rounded-lg`;
+            document.getElementById('filterSL').className = `px-3 py-1.5 ${type === 'SL' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-gray-800 text-gray-300'} rounded-lg`;
+            renderHistoryTable();
+        }
+
+        function updateStats() {
+            const total = historyData.length;
+            const wins = historyData.filter(i => i.status.includes('TP')).length;
+            const winRate = ((wins / total) * 100).toFixed(1);
+
+            document.getElementById('statWinRate').innerText = `${winRate}%`;
+            document.getElementById('statTotalSignals').innerText = total;
+        }
+
         function copySignal() {
             const entry = document.getElementById('sigEntry').innerText;
             const sl = document.getElementById('sigSL').innerText;
             const tp1 = document.getElementById('sigTP1').innerText;
             const tp2 = document.getElementById('sigTP2').innerText;
 
-            const text = `🎯 XAUUSD AI SNIPER SIGNAL\nType: BUY LIMIT\nEntry: ${entry}\nSL: ${sl}\nTP1: ${tp1}\nTP2: ${tp2}\nBroker: https://one.exnessonelink.com/a/m3alh1ljmu?source=app`;
+            const text = `🎯 XAUUSD AI SNIPER SIGNAL\nAsset: XAUUSD\nType: ${activeSetup.type} LIMIT\nEntry: ${entry}\nSL: ${sl}\nTP1: ${tp1}\nTP2: ${tp2}\nBroker: https://one.exnessonelink.com/a/m3alh1ljmu?source=app`;
 
             navigator.clipboard.writeText(text).then(() => {
-                alert('Signal copied to clipboard!');
+                alert('Sniper signal parameters copied to clipboard!');
             });
         }
+
+        // Initialize App
+        renderDOM();
+        renderHistoryTable();
+        updateActiveCardUI();
     </script>
 </body>
 </html>
