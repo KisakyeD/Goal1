@@ -108,7 +108,7 @@
                 <i data-lucide="external-link" class="w-4 h-4"></i>
                 <span>Open Exness Partner Portal</span>
             </a>
-            <p class="text-[10px] text-gray-500 text-center">Goal AI Prediction Platform v5.0</p>
+            <p class="text-[10px] text-gray-500 text-center">Goal AI Prediction Platform v5.1</p>
         </div>
     </aside>
 
@@ -211,7 +211,7 @@
                 </div>
             </div>
 
-            <!-- Odds Category Tier Selector Pills (Added Odd 50) -->
+            <!-- Odds Category Tier Selector Pills -->
             <div class="flex items-center space-x-2 border-b border-darkborder/60 pb-3 overflow-x-auto no-scrollbar">
                 <button onclick="setVipTier('5')" id="vipTierBtn5" class="px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-darkborder/60 text-gray-300 border-darkborder whitespace-nowrap">
                     Odd 5+ Ticket
@@ -733,6 +733,7 @@
             if (window.lucide) lucide.createIcons();
         }
 
+        // Guaranteed unique matches without duplicates on the same ticket
         function getVipFixturesForDate(dateStr, tier, isPast, isFuture) {
             const dateSeed = dateStr.split('-').reduce((acc, val) => acc + parseInt(val), 0);
             
@@ -748,23 +749,35 @@
                 { home: "Inter Milan", away: "Napoli", league: "Serie A" },
                 { home: "Monaco", away: "Lyon", league: "Ligue 1" },
                 { home: "Ajax", away: "Feyenoord", league: "Eredivisie" },
-                { home: "Benfica", away: "Porto", league: "Liga Portugal" }
+                { home: "Benfica", away: "Porto", league: "Liga Portugal" },
+                { home: "Tottenham", away: "Aston Villa", league: "Premier League" },
+                { home: "Valencia", away: "Real Sociedad", league: "La Liga" },
+                { home: "Roma", away: "Lazio", league: "Serie A" },
+                { home: "Fiorentina", away: "Atalanta", league: "Serie A" }
             ];
 
             const singlePicksPool = [
                 "1X (Home/Draw)", "X2 (Draw/Away)", "Over 1.5 Goals", "BTTS Yes", "Over 2.5 Goals", "Under 3.5 Goals"
             ];
 
-            // Legs calculation for single-pick accumulators
             let legsCount = 4;
             if (tier === '5') legsCount = 3;
             else if (tier === '20') legsCount = 6;
-            else if (tier === '50') legsCount = 8; // Odd 50 Mega ticket
+            else if (tier === '50') legsCount = 8;
 
             const matches = [];
+            const usedIndices = new Set();
 
             for (let i = 0; i < legsCount; i++) {
-                const idx = (dateSeed + i * 3) % teamsPool.length;
+                // Find a unique team index using probing to eliminate match repeats
+                let idx = (dateSeed + i * 3) % teamsPool.length;
+                let probes = 0;
+                while (usedIndices.has(idx) && probes < teamsPool.length) {
+                    idx = (idx + 1) % teamsPool.length;
+                    probes++;
+                }
+                usedIndices.add(idx);
+
                 const pickIdx = (dateSeed + i * 2) % singlePicksPool.length;
                 const t = teamsPool[idx];
 
