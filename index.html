@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XAUUSD AI Sniper Engine - Dynamic Live Analytics & Auto-Refresh Signals</title>
+    <title>XAUUSD AI Sniper Engine - Fixed SMC Zones & Live Analytics</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -30,8 +30,6 @@
         .glow-gold { box-shadow: 0 0 20px rgba(234, 179, 8, 0.2); }
         .glow-green { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); }
         .glow-red { box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
-        @keyframes pulse-fast { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .animate-pulse-fast { animation: pulse-fast 1s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     </style>
 </head>
 <body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col transition-colors duration-200" id="bodyEl">
@@ -46,9 +44,9 @@
                 <div>
                     <h1 class="font-bold text-lg tracking-wide text-white flex items-center gap-2">
                         XAUUSD <span class="text-gold-400">SNIPER AI</span>
-                        <span class="text-[10px] bg-gold-500/20 text-gold-400 border border-gold-500/30 px-2 py-0.5 rounded-full font-mono">v4.0 EA</span>
+                        <span class="text-[10px] bg-gold-500/20 text-gold-400 border border-gold-500/30 px-2 py-0.5 rounded-full font-mono">v4.1 EA</span>
                     </h1>
-                    <p class="text-xs text-gray-400">Institutional SMC & Order Flow Engine</p>
+                    <p class="text-xs text-gray-400">Institutional Fixed SMC Zone Engine</p>
                 </div>
             </div>
 
@@ -99,7 +97,7 @@
             <div class="bg-gray-900/80 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
                 <div>
                     <p class="text-xs text-gray-400 font-medium">Nearest Demand Zone</p>
-                    <p id="demandZone" class="text-sm md:text-base font-bold text-gray-200 mt-1 font-mono">$4,071.50 - $4,082.00</p>
+                    <p id="demandZone" class="text-sm md:text-base font-bold text-gray-200 mt-1 font-mono">$4,071.50 - $4,088.50</p>
                 </div>
                 <div class="p-2.5 bg-blue-500/10 rounded-lg text-blue-400 border border-blue-500/20">
                     <i data-lucide="shield-check" class="w-5 h-5"></i>
@@ -109,7 +107,7 @@
             <div class="bg-gray-900/80 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
                 <div>
                     <p class="text-xs text-gray-400 font-medium">Nearest Supply Zone</p>
-                    <p id="supplyZone" class="text-sm md:text-base font-bold text-gray-200 mt-1 font-mono">$4,118.00 - $4,126.50</p>
+                    <p id="supplyZone" class="text-sm md:text-base font-bold text-gray-200 mt-1 font-mono">$4,115.00 - $4,126.50</p>
                 </div>
                 <div class="p-2.5 bg-rose-500/10 rounded-lg text-rose-400 border border-rose-500/20">
                     <i data-lucide="zap" class="w-5 h-5"></i>
@@ -163,8 +161,8 @@
                     <div class="space-y-3">
                         <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">AI Confluence Breakdown:</h4>
                         <div id="confluenceTags" class="flex flex-wrap gap-2">
-                            <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ Daily Liquidity Rejection ($4,071 Sweep)</span>
-                            <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ H1 Bullish Order Block (OB)</span>
+                            <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ Fixed H1 Order Block Demand ($4,088.50)</span>
+                            <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ Daily Liquidity Rejection Sweep</span>
                             <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ Fair Value Gap (FVG) Fill</span>
                             <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-md border border-gray-700">✓ R:R Ratio 1:2.8</span>
                         </div>
@@ -292,6 +290,7 @@
             { id: '#SIG-408510', type: 'BUY', entry: '$4,020.00', sl: '$4,012.00', tp1: '$4,035.00', tp2: '$4,048.00', status: 'TP1 HIT', pips: '+150 pips', rationale: 'Asian Session Liquidity Sweep', time: '18 Oct 2026, 04:10 AM' }
         ];
 
+        // Structural Fixed SMC Zones
         let activeSetup = {
             id: '#SIG-409022',
             type: 'BUY',
@@ -299,7 +298,7 @@
             sl: 4079.00,
             tp1: 4102.00,
             tp2: 4115.50,
-            rationale: 'Daily Liquidity Rejection + H1 OB',
+            rationale: 'Fixed H1 Order Block Demand ($4,088.50)',
             status: 'ACTIVE'
         };
 
@@ -321,6 +320,7 @@
             }
         }
 
+        // Live Simulated Price Tick Generator
         setInterval(() => {
             const delta = (Math.random() - 0.48) * 0.45;
             currentPrice = parseFloat((currentPrice + delta).toFixed(2));
@@ -336,6 +336,7 @@
             checkSetupOutcome();
         }, 1500);
 
+        // Auto Refresh Scanner Timer
         setInterval(() => {
             countdown--;
             if (countdown <= 0) {
@@ -350,21 +351,22 @@
             refreshAIAnalysis();
         }
 
+        // Fixed Structural Zone Evaluation (Option B Fix)
         function refreshAIAnalysis() {
+            // Fix: Bind entry/SL/TP parameters to structural SMC levels instead of dynamic floating offsets
             const isBuy = currentPrice < 4100;
-            const newEntry = isBuy ? (currentPrice - 2.50).toFixed(2) : (currentPrice + 2.50).toFixed(2);
-            const newSL = isBuy ? (newEntry - 9.50).toFixed(2) : (parseFloat(newEntry) + 9.50).toFixed(2);
-            const newTP1 = isBuy ? (parseFloat(newEntry) + 13.50).toFixed(2) : (newEntry - 13.50).toFixed(2);
-            const newTP2 = isBuy ? (parseFloat(newEntry) + 27.00).toFixed(2) : (newEntry - 27.00).toFixed(2);
+
+            const demandOB = 4088.50;
+            const supplyOB = 4115.00;
 
             activeSetup = {
                 id: '#SIG-' + Math.floor(100000 + Math.random() * 900000),
                 type: isBuy ? 'BUY' : 'SELL',
-                entry: parseFloat(newEntry),
-                sl: parseFloat(newSL),
-                tp1: parseFloat(newTP1),
-                tp2: parseFloat(newTP2),
-                rationale: isBuy ? 'M15 Order Block + FVG Rejection' : 'H1 Supply Liquidity Sweep',
+                entry: isBuy ? demandOB : supplyOB,
+                sl: isBuy ? 4079.00 : 4124.50,
+                tp1: isBuy ? 4102.00 : 4101.00,
+                tp2: isBuy ? 4115.50 : 4088.00,
+                rationale: isBuy ? 'Fixed H1 Order Block Demand ($4,088.50)' : 'Fixed H4 Supply Zone ($4,115.00)',
                 status: 'ACTIVE'
             };
 
