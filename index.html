@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goal - Live Scores, AI Combos & VIP 10+ Odds</title>
+    <title>Goal - Live Scores, AI Combos & VIP Odds</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -58,13 +58,34 @@
                     <span>Live Dashboard & Matches</span>
                 </button>
 
-                <button onclick="switchView('vip')" class="w-full px-4 py-3 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold flex items-center justify-between transition glow-gold">
-                    <div class="flex items-center space-x-3">
-                        <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
-                        <span>VIP 10+ Odds Tickets</span>
-                    </div>
-                    <span class="bg-amber-500 text-darkbg text-[10px] font-black px-2 py-0.5 rounded-full">ODD 10</span>
-                </button>
+                <!-- VIP Categories -->
+                <div class="space-y-1 pt-2">
+                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider px-4">VIP Tickets Engine</span>
+                    
+                    <button onclick="switchView('vip', '5')" class="w-full px-4 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-xs font-bold flex items-center justify-between transition">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
+                            <span>VIP Odd 5 Ticket</span>
+                        </div>
+                        <span class="bg-amber-500/20 text-amber-400 text-[10px] font-black px-2 py-0.5 rounded-full border border-amber-500/30">ODD 5+</span>
+                    </button>
+
+                    <button onclick="switchView('vip', '10')" class="w-full px-4 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold flex items-center justify-between transition glow-gold">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
+                            <span>VIP Odd 10 Ticket</span>
+                        </div>
+                        <span class="bg-amber-500 text-darkbg text-[10px] font-black px-2 py-0.5 rounded-full">ODD 10+</span>
+                    </button>
+
+                    <button onclick="switchView('vip', '20')" class="w-full px-4 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-xs font-bold flex items-center justify-between transition">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
+                            <span>VIP Odd 20 Ticket</span>
+                        </div>
+                        <span class="bg-amber-500/20 text-amber-400 text-[10px] font-black px-2 py-0.5 rounded-full border border-amber-500/30">ODD 20+</span>
+                    </button>
+                </div>
 
                 <button onclick="switchView('settings')" class="w-full px-4 py-3 bg-darkborder/40 hover:bg-darkborder/80 text-white rounded-xl text-xs font-bold flex items-center space-x-3 transition">
                     <i data-lucide="settings" class="w-4 h-4 text-blue-400"></i>
@@ -79,7 +100,7 @@
                 <i data-lucide="external-link" class="w-4 h-4"></i>
                 <span>Open Exness Partner Portal</span>
             </a>
-            <p class="text-[10px] text-gray-500 text-center">Goal AI Prediction Platform v2.5</p>
+            <p class="text-[10px] text-gray-500 text-center">Goal AI Prediction Platform v3.0</p>
         </div>
     </aside>
 
@@ -102,10 +123,10 @@
 
             <!-- Header Controls -->
             <div class="flex items-center space-x-3">
-                <!-- Direct VIP Quick Access Button -->
+                <!-- VIP Quick Access Button -->
                 <button onclick="switchView('vip')" class="px-3 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full text-xs font-bold flex items-center gap-1.5 transition glow-gold hover:bg-amber-500/30">
                     <i data-lucide="crown" class="w-3.5 h-3.5"></i>
-                    <span>VIP 10+</span>
+                    <span>VIP TICKETS</span>
                 </button>
 
                 <button onclick="filterLiveMatches()" id="liveFilterBtn" class="px-3 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-full text-xs font-bold flex items-center gap-1.5 transition">
@@ -161,17 +182,18 @@
         </div>
     </main>
 
-    <!-- VIP PREDICTIONS VIEW (ODD 10) -->
+    <!-- VIP PREDICTIONS VIEW -->
     <section id="vipView" class="max-w-4xl mx-auto px-4 py-4 w-full flex-grow space-y-5 hidden">
         <div class="bg-gradient-to-r from-amber-950/60 via-darkcard to-darkcard border border-amber-500/40 rounded-2xl p-5 space-y-4 glow-gold relative">
+            
             <div class="flex flex-wrap justify-between items-center border-b border-amber-500/20 pb-3 gap-2">
                 <div class="flex items-center space-x-3">
                     <div class="p-2 bg-amber-500/20 rounded-xl text-amber-400">
                         <i data-lucide="crown" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h2 class="text-base font-black text-white uppercase tracking-wider">AI VIP 10+ Odds Ticket Engine</h2>
-                        <p class="text-xs text-gray-400">High-Probability Multi-Leg Accumulators</p>
+                        <h2 class="text-base font-black text-white uppercase tracking-wider">AI VIP Ticket Engine</h2>
+                        <p class="text-xs text-gray-400">Multi-Tier High-Confidence Accumulators</p>
                     </div>
                 </div>
 
@@ -181,15 +203,31 @@
                 </div>
             </div>
 
-            <!-- VIP Ticket Calendar Toolbar -->
-            <div class="flex items-center justify-between bg-darkbg/80 border border-darkborder p-2 rounded-xl text-xs">
-                <span class="text-gray-400 font-medium">VIP Ticket Date:</span>
+            <!-- Odds Category Tier Selector Pills -->
+            <div class="flex items-center space-x-2 border-b border-darkborder/60 pb-3">
+                <button onclick="setVipTier('5')" id="vipTierBtn5" class="px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-darkborder/60 text-gray-300 border-darkborder">
+                    Odd 5+ Ticket
+                </button>
+                <button onclick="setVipTier('10')" id="vipTierBtn10" class="px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-amber-500 text-darkbg border-amber-500 font-black shadow">
+                    Odd 10+ Ticket
+                </button>
+                <button onclick="setVipTier('20')" id="vipTierBtn20" class="px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-darkborder/60 text-gray-300 border-darkborder">
+                    Odd 20+ Ticket
+                </button>
+            </div>
+
+            <!-- VIP Ticket Interactive Calendar Toolbar -->
+            <div class="flex items-center justify-between bg-darkbg/80 border border-darkborder p-2.5 rounded-xl text-xs">
+                <span class="text-gray-400 font-bold uppercase tracking-wider text-[10px]">Select Ticket Date:</span>
                 <div class="flex items-center space-x-2">
-                    <button onclick="changeVipDate(-1)" class="p-1 hover:bg-darkborder rounded text-gray-300">
+                    <button onclick="changeVipDate(-1)" class="p-1.5 hover:bg-darkborder rounded-lg text-gray-300 transition">
                         <i data-lucide="chevron-left" class="w-4 h-4"></i>
                     </button>
-                    <span id="vipDateDisplay" class="font-bold text-amber-400 font-mono">2026-10-22</span>
-                    <button onclick="changeVipDate(1)" class="p-1 hover:bg-darkborder rounded text-gray-300">
+
+                    <!-- Native Working Calendar Input for VIP -->
+                    <input type="date" id="vipCalendarPicker" onchange="selectVipCalendarDate(this.value)" class="bg-darkcard border border-darkborder text-amber-400 font-mono font-bold text-xs rounded-lg px-2.5 py-1 focus:outline-none">
+
+                    <button onclick="changeVipDate(1)" class="p-1.5 hover:bg-darkborder rounded-lg text-gray-300 transition">
                         <i data-lucide="chevron-right" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -319,6 +357,7 @@
     <script>
         let currentDate = new Date();
         let vipDate = new Date();
+        let selectedVipTier = '10'; // Options: '5', '10', '20'
         let showOnlyLive = false;
         let selectedLeague = 'ALL';
         let searchQuery = '';
@@ -340,7 +379,7 @@
             document.getElementById('sidebarBackdrop').classList.add('hidden');
         }
 
-        function switchView(viewName) {
+        function switchView(viewName, tier) {
             closeSidebar();
             document.getElementById('mainView').classList.add('hidden');
             document.getElementById('vipView').classList.add('hidden');
@@ -350,6 +389,8 @@
                 document.getElementById('mainView').classList.remove('hidden');
             } else if (viewName === 'vip') {
                 document.getElementById('vipView').classList.remove('hidden');
+                if (tier) selectedVipTier = tier;
+                updateVipTierUI();
                 renderVipTicket();
             } else if (viewName === 'settings') {
                 document.getElementById('settingsView').classList.remove('hidden');
@@ -546,17 +587,58 @@
             if (window.lucide) lucide.createIcons();
         }
 
-        // 4. VIP 10+ Odds Ticket Generator Logic
+        // 4. VIP Multi-Tier Odds Ticket Generator
+        function setVipTier(tier) {
+            selectedVipTier = tier;
+            updateVipTierUI();
+            renderVipTicket();
+        }
+
+        function updateVipTierUI() {
+            const tiers = ['5', '10', '20'];
+            tiers.forEach(t => {
+                const btn = document.getElementById(`vipTierBtn${t}`);
+                if (btn) {
+                    if (t === selectedVipTier) {
+                        btn.className = "px-4 py-1.5 rounded-xl text-xs font-black border transition bg-amber-500 text-darkbg border-amber-500 shadow";
+                    } else {
+                        btn.className = "px-4 py-1.5 rounded-xl text-xs font-bold border transition bg-darkborder/60 text-gray-300 border-darkborder hover:text-white";
+                    }
+                }
+            });
+        }
+
         function renderVipTicket() {
             const container = document.getElementById('vipTicketList');
-            document.getElementById('vipDateDisplay').innerText = vipDate.toISOString().split('T')[0];
+            const picker = document.getElementById('vipCalendarPicker');
+            const formattedDate = vipDate.toISOString().split('T')[0];
+            if (picker) picker.value = formattedDate;
 
-            const vipMatches = [
-                { match: "Juventus vs Rennes", league: "Europa League", pick: "1X + Over 2.5 Goals", odds: 2.35 },
-                { match: "Man City vs Liverpool", league: "Premier League", pick: "BTTS Yes + Over 2.5 Goals", odds: 2.10 },
-                { match: "Barcelona vs Atl. Madrid", league: "La Liga", pick: "1X + BTTS Yes", odds: 2.20 },
-                { match: "PSG vs Marseille", league: "Ligue 1", pick: "Over 2.5 Goals + 1X", odds: 1.95 }
-            ];
+            let vipMatches = [];
+
+            if (selectedVipTier === '5') {
+                vipMatches = [
+                    { match: "Juventus vs Rennes", league: "Europa League", pick: "1X + Over 1.5 Goals", odds: 1.75 },
+                    { match: "Man City vs Liverpool", league: "Premier League", pick: "BTTS Yes", odds: 1.62 },
+                    { match: "Barcelona vs Atl. Madrid", league: "La Liga", pick: "1X (Home/Draw)", odds: 1.80 }
+                ];
+            } else if (selectedVipTier === '20') {
+                vipMatches = [
+                    { match: "Juventus vs Rennes", league: "Europa League", pick: "1X + Over 2.5 Goals", odds: 2.35 },
+                    { match: "Man City vs Liverpool", league: "Premier League", pick: "BTTS Yes + Over 2.5 Goals", odds: 2.20 },
+                    { match: "Barcelona vs Atl. Madrid", league: "La Liga", pick: "1X + BTTS Yes", odds: 2.15 },
+                    { match: "PSG vs Marseille", league: "Ligue 1", pick: "Over 2.5 Goals + 1X", odds: 1.95 },
+                    { match: "Inter Miami vs LA Galaxy", league: "MLS", pick: "Over 3.5 Match Goals", odds: 2.10 }
+                ];
+            } else {
+                // Default Odd 10
+                vipMatches = [
+                    { match: "Juventus vs Rennes", league: "Europa League", pick: "1X + Over 2.5 Goals", odds: 2.35 },
+                    { match: "Man City vs Liverpool", league: "Premier League", pick: "BTTS Yes + Over 2.5 Goals", odds: 2.10 },
+                    { match: "Barcelona vs Atl. Madrid", league: "La Liga", pick: "1X + BTTS Yes", odds: 2.20 },
+                    { match: "PSG vs Marseille", league: "Ligue 1", pick: "Over 2.5 Goals + 1X", odds: 1.95 }
+                ];
+            }
 
             let totalOdds = 1.0;
             container.innerHTML = '';
@@ -585,11 +667,19 @@
             renderVipTicket();
         }
 
+        function selectVipCalendarDate(val) {
+            if (val) {
+                vipDate = new Date(val);
+                renderVipTicket();
+            }
+        }
+
         function copyVipTicket() {
             const dateStr = vipDate.toISOString().split('T')[0];
-            const text = `👑 GOAL VIP 10+ ODDS TICKET (${dateStr}) 👑\nTotal Odds: @10.85\n\n1. Juventus vs Rennes: 1X + Over 2.5 Goals (@2.35)\n2. Man City vs Liverpool: BTTS Yes + Over 2.5 Goals (@2.10)\n3. Barcelona vs Atl. Madrid: 1X + BTTS Yes (@2.20)\n4. PSG vs Marseille: Over 2.5 Goals + 1X (@1.95)\n\nPlay on Partner Portal: https://one.exnessonelink.com/a/m3alh1ljmu?source=app`;
+            const targetOdds = document.getElementById('vipTotalOdds').innerText;
+            const text = `👑 GOAL VIP ODD ${selectedVipTier}+ TICKET (${dateStr}) 👑\nTotal Odds: ${targetOdds}\n\n1. Juventus vs Rennes: 1X + Over 2.5 Goals\n2. Man City vs Liverpool: BTTS Yes + Over 2.5 Goals\n3. Barcelona vs Atl. Madrid: 1X + BTTS Yes\n\nPlay on Partner Portal: https://one.exnessonelink.com/a/m3alh1ljmu?source=app`;
             navigator.clipboard.writeText(text).then(() => {
-                alert("VIP 10+ Odds Ticket copied to clipboard!");
+                alert(`VIP Odd ${selectedVipTier}+ Ticket copied to clipboard!`);
             });
         }
 
