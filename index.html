@@ -108,7 +108,7 @@
                 <i data-lucide="external-link" class="w-4 h-4"></i>
                 <span>Open Exness Partner Portal</span>
             </a>
-            <p class="text-[10px] text-gray-500 text-center">Goal Platform v9.0</p>
+            <p class="text-[10px] text-gray-500 text-center">Goal Platform v9.5</p>
         </div>
     </aside>
 
@@ -166,7 +166,7 @@
 
         <!-- Continuous Calendar Navigation Bar -->
         <div class="bg-darkcard border border-darkborder rounded-xl p-2 flex items-center justify-between text-xs font-medium">
-            <button onclick="navigateDate(-1)" class="p-1.5 hover:bg-darkborder rounded-lg text-gray-400">
+            <button onclick="navigateDate(-1)" class="p-1.5 hover:bg-darkborder rounded-lg text-gray-400 transition">
                 <i data-lucide="chevron-left" class="w-5 h-5"></i>
             </button>
 
@@ -175,11 +175,11 @@
             </div>
 
             <div class="flex items-center space-x-1">
-                <button onclick="navigateDate(1)" class="p-1.5 hover:bg-darkborder rounded-lg text-gray-400">
+                <button onclick="navigateDate(1)" class="p-1.5 hover:bg-darkborder rounded-lg text-gray-400 transition">
                     <i data-lucide="chevron-right" class="w-5 h-5"></i>
                 </button>
                 <input type="date" id="datePicker" onchange="selectCustomDate(this.value)" class="hidden">
-                <button onclick="document.getElementById('datePicker').showPicker()" class="p-1.5 bg-darkborder/60 hover:bg-darkborder rounded-lg text-gray-300">
+                <button onclick="document.getElementById('datePicker').showPicker()" class="p-1.5 bg-darkborder/60 hover:bg-darkborder rounded-lg text-gray-300 transition">
                     <i data-lucide="calendar" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -375,7 +375,8 @@
 
     <!-- JAVASCRIPT ENGINE -->
     <script>
-        let currentDate = new Date();
+        let todayDate = new Date(); // Anchor today
+        let selectedDate = new Date(); // Current chosen calendar date
         let vipDate = new Date();
         let selectedVipTier = '10'; // Options: '5', '10', '20', '50'
         let showOnlyLive = false;
@@ -420,8 +421,8 @@
         }
 
         // 2. Real Prediction & AI Generator
-        function generateAiPrediction(homeName, awayName, homeScore, awayScore) {
-            const seed = (homeName + awayName).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        function generateAiPrediction(homeName, awayName, homeScore, awayScore, dateSeed) {
+            const seedStr = (homeName + awayName + (dateSeed || '')).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
             
             const pickPool = [
                 { pick: "1X (Home/Draw)", oddsMin: 1.30, oddsMax: 1.65 },
@@ -432,9 +433,9 @@
                 { pick: "Under 3.5 Goals", oddsMin: 1.22, oddsMax: 1.42 }
             ];
 
-            const pickObj = pickPool[seed % pickPool.length];
-            const odds = parseFloat((pickObj.oddsMin + (seed % 35) / 100).toFixed(2));
-            const confidence = 82 + (seed % 14);
+            const pickObj = pickPool[seedStr % pickPool.length];
+            const odds = parseFloat((pickObj.oddsMin + (seedStr % 35) / 100).toFixed(2));
+            const confidence = 82 + (seedStr % 14);
 
             let rationale = `Model calculates ${pickObj.pick} with ${confidence}% probability based on recent offensive pressure and defensive regression metrics.`;
 
@@ -458,7 +459,7 @@
                 `;
             }
 
-            const dateStr = currentDate.toISOString().split('T')[0];
+            const dateStr = selectedDate.toISOString().split('T')[0];
             let events = [];
 
             if (apiCache[dateStr]) {
@@ -499,7 +500,7 @@
                     const homeScore = homeTeam?.score !== undefined ? homeTeam.score : "0";
                     const awayScore = awayTeam?.score !== undefined ? awayTeam.score : "0";
 
-                    const aiPrediction = generateAiPrediction(homeName, awayName, homeScore, awayScore);
+                    const aiPrediction = generateAiPrediction(homeName, awayName, homeScore, awayScore, dateStr);
 
                     const matchObj = {
                         id: evt.id || Math.floor(Math.random() * 100000),
@@ -527,7 +528,7 @@
                 });
             }
 
-            // Fallback / Rich Match Generator if ESPN list is empty or specific league selected
+            // Fallback / Rich Match Generator if ESPN list is empty or specific date clicked
             if (Object.keys(leaguesMap).length === 0 || selectedLeague !== 'ALL') {
                 const fallbackLeagues = [
                     { league: "Premier League", matches: [ {h: "Arsenal", a: "Everton"}, {h: "Aston Villa", a: "Manchester City"}, {h: "Chelsea", a: "Tottenham Hotspur"}, {h: "Coventry City", a: "Fulham"} ] },
@@ -540,9 +541,9 @@
                     if (!leaguesMap[lg.league]) {
                         const matchesArr = [];
                         lg.matches.forEach((m, idx) => {
-                            const aiPred = generateAiPrediction(m.h, m.a, 0, 0);
+                            const aiPred = generateAiPrediction(m.h, m.a, 0, 0, dateStr + idx);
                             matchesArr.push({
-                                id: `fb_${lg.league}_${idx}`,
+                                id: `fb_${lg.league}_${dateStr}_${idx}`,
                                 time: `${14 + idx * 2}:30 PM`,
                                 status: "NS",
                                 home: m.h,
@@ -875,7 +876,7 @@
                     const homeScore = homeTeam?.score !== undefined ? homeTeam.score : "-";
                     const awayScore = awayTeam?.score !== undefined ? awayTeam.score : "-";
 
-                    const aiPred = generateAiPrediction(homeName, awayName, homeScore, awayScore);
+                    const aiPred = generateAiPrediction(homeName, awayName, homeScore, awayScore, dateStr);
                     const matchTime = evt.date ? new Date(evt.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "19:45";
 
                     const isWon = isPast ? evaluateLegWin(aiPred.leg1, homeScore, awayScore) : true;
@@ -907,7 +908,7 @@
 
                 for (let i = matches.length; i < legsCount; i++) {
                     const fb = fallbackTeams[i % fallbackTeams.length];
-                    const aiPred = generateAiPrediction(fb.home, fb.away, 2, 1);
+                    const aiPred = generateAiPrediction(fb.home, fb.away, 2, 1, dateStr + i);
                     const hGoal = (i * 2) % 3 + 1;
                     const aGoal = i % 2;
 
@@ -972,30 +973,48 @@
             });
         }
 
+        // Calendar Date Pill Renderer with Fixed Click Handlers
         function renderCalendar() {
             const container = document.getElementById('calendarDates');
             if (!container) return;
 
             container.innerHTML = '';
 
-            for (let i = -2; i <= 2; i++) {
-                const date = new Date(currentDate);
-                date.setDate(currentDate.getDate() + i);
+            const todayStr = todayDate.toISOString().split('T')[0];
+            const selectedStr = selectedDate.toISOString().split('T')[0];
 
-                const isSelected = i === 0;
-                const label = i === 0 ? 'Today' : (i === -1 ? 'Yesterday' : (i === 1 ? 'Tomorrow' : date.toLocaleDateString('en-US', { weekday: 'short' })));
-                const dayNum = date.getDate();
+            for (let i = -2; i <= 2; i++) {
+                const targetDate = new Date(selectedDate);
+                targetDate.setDate(selectedDate.getDate() + i);
+
+                const targetStr = targetDate.toISOString().split('T')[0];
+                const isSelected = targetStr === selectedStr;
+                
+                let label = '';
+                if (targetStr === todayStr) {
+                    label = 'TODAY';
+                } else {
+                    const diffDays = Math.round((targetDate - todayDate) / (1000 * 60 * 60 * 24));
+                    if (diffDays === -1) label = 'YESTERDAY';
+                    else if (diffDays === 1) label = 'TOMORROW';
+                    else label = targetDate.toLocaleDateString('en-US', { weekday: 'short' });
+                }
+
+                const dayNum = targetDate.getDate();
 
                 const btn = document.createElement('button');
-                btn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold flex flex-col items-center min-w-[60px] transition ${isSelected ? 'bg-emerald-500 text-darkbg font-bold' : 'hover:bg-darkborder text-gray-400'}`;
+                btn.className = `px-3.5 py-1.5 rounded-lg text-xs font-semibold flex flex-col items-center min-w-[64px] transition cursor-pointer ${isSelected ? 'bg-emerald-500 text-darkbg font-extrabold shadow-md' : 'hover:bg-darkborder text-gray-400'}`;
+                
+                // Store actual date copy in closure
+                const dateCopy = new Date(targetDate);
                 btn.onclick = () => {
-                    currentDate = date;
+                    selectedDate = new Date(dateCopy);
                     renderCalendar();
                     fetchLiveFootballData();
                 };
 
                 btn.innerHTML = `
-                    <span class="text-[10px] uppercase">${label}</span>
+                    <span class="text-[9px] uppercase tracking-wider">${label}</span>
                     <span class="text-sm font-bold">${dayNum}</span>
                 `;
                 container.appendChild(btn);
@@ -1003,14 +1022,14 @@
         }
 
         function navigateDate(days) {
-            currentDate.setDate(currentDate.getDate() + days);
+            selectedDate.setDate(selectedDate.getDate() + days);
             renderCalendar();
             fetchLiveFootballData();
         }
 
         function selectCustomDate(val) {
             if (val) {
-                currentDate = new Date(val);
+                selectedDate = new Date(val);
                 renderCalendar();
                 fetchLiveFootballData();
             }
