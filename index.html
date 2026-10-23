@@ -108,7 +108,7 @@
                 <i data-lucide="external-link" class="w-4 h-4"></i>
                 <span>Open Exness Partner Portal</span>
             </a>
-            <p class="text-[10px] text-gray-500 text-center">Goal Platform v8.5</p>
+            <p class="text-[10px] text-gray-500 text-center">Goal Platform v9.0</p>
         </div>
     </aside>
 
@@ -384,6 +384,7 @@
         let globalLeaguesData = [];
         let activeMatch = null;
         let apiCache = {};
+        let favoriteMatchIds = new Set();
 
         if (window.lucide) {
             lucide.createIcons();
@@ -495,8 +496,8 @@
 
                     const homeName = homeTeam?.team?.displayName || "Home Team";
                     const awayName = awayTeam?.team?.displayName || "Away Team";
-                    const homeScore = homeTeam?.score !== undefined ? homeTeam.score : "-";
-                    const awayScore = awayTeam?.score !== undefined ? awayTeam.score : "-";
+                    const homeScore = homeTeam?.score !== undefined ? homeTeam.score : "0";
+                    const awayScore = awayTeam?.score !== undefined ? awayTeam.score : "0";
 
                     const aiPrediction = generateAiPrediction(homeName, awayName, homeScore, awayScore);
 
@@ -526,38 +527,41 @@
                 });
             }
 
-            // Fallback / Rich Match Generator if ESPN list is empty for a selected date
-            if (Object.keys(leaguesMap).length === 0) {
+            // Fallback / Rich Match Generator if ESPN list is empty or specific league selected
+            if (Object.keys(leaguesMap).length === 0 || selectedLeague !== 'ALL') {
                 const fallbackLeagues = [
-                    { league: "Premier League", matches: [ {h: "Arsenal", a: "Chelsea"}, {h: "Liverpool", a: "Man City"}, {h: "Manchester United", a: "Tottenham"} ] },
-                    { league: "La Liga", matches: [ {h: "Real Madrid", a: "Barcelona"}, {h: "Atletico Madrid", a: "Sevilla"} ] },
+                    { league: "Premier League", matches: [ {h: "Arsenal", a: "Everton"}, {h: "Aston Villa", a: "Manchester City"}, {h: "Chelsea", a: "Tottenham Hotspur"}, {h: "Coventry City", a: "Fulham"} ] },
+                    { league: "La Liga", matches: [ {h: "Rayo Vallecano", a: "Elche"}, {h: "Real Madrid", a: "Barcelona"}, {h: "Atletico Madrid", a: "Sevilla"} ] },
+                    { league: "UEFA Europa League", matches: [ {h: "Roma", a: "Feyenoord"}, {h: "Lazio", a: "Porto"} ] },
                     { league: "UEFA Champions League", matches: [ {h: "Bayern Munich", a: "PSG"}, {h: "AC Milan", a: "Juventus"} ] }
                 ];
 
                 fallbackLeagues.forEach(lg => {
-                    const matchesArr = [];
-                    lg.matches.forEach((m, idx) => {
-                        const aiPred = generateAiPrediction(m.h, m.a, idx, idx+1);
-                        matchesArr.push({
-                            id: Math.floor(Math.random() * 100000),
-                            time: `${17 + idx}:00`,
-                            status: "NS",
-                            home: m.h,
-                            away: m.a,
-                            scoreHome: "-",
-                            scoreAway: "-",
-                            isLive: false,
-                            leg1: aiPred.leg1,
-                            confidence: aiPred.confidence,
-                            odds: aiPred.odds,
-                            rationale: aiPred.rationale
+                    if (!leaguesMap[lg.league]) {
+                        const matchesArr = [];
+                        lg.matches.forEach((m, idx) => {
+                            const aiPred = generateAiPrediction(m.h, m.a, 0, 0);
+                            matchesArr.push({
+                                id: `fb_${lg.league}_${idx}`,
+                                time: `${14 + idx * 2}:30 PM`,
+                                status: "NS",
+                                home: m.h,
+                                away: m.a,
+                                scoreHome: "0",
+                                scoreAway: "0",
+                                isLive: false,
+                                leg1: aiPred.leg1,
+                                confidence: aiPred.confidence,
+                                odds: aiPred.odds,
+                                rationale: aiPred.rationale
+                            });
                         });
-                    });
-                    leaguesMap[lg.league] = {
-                        league: lg.league,
-                        stage: "Scheduled Fixtures",
-                        matches: matchesArr
-                    };
+                        leaguesMap[lg.league] = {
+                            league: lg.league,
+                            stage: "Matchday Fixtures",
+                            matches: matchesArr
+                        };
+                    }
                 });
             }
 
@@ -571,15 +575,7 @@
             
             container.innerHTML = '';
             let totalLiveCount = 0;
-
-            if (globalLeaguesData.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-darkcard border border-darkborder rounded-xl p-8 text-center text-gray-400 text-xs">
-                        No matches found for the selected date or filters.
-                    </div>
-                `;
-                return;
-            }
+            let totalRenderedMatches = 0;
 
             globalLeaguesData.forEach(league => {
                 if (selectedLeague !== 'ALL' && !league.league.toLowerCase().includes(selectedLeague.toLowerCase())) return;
@@ -598,11 +594,14 @@
 
                 if (filteredMatches.length === 0) return;
 
+                totalRenderedMatches += filteredMatches.length;
+
                 const leagueBox = document.createElement('div');
                 leagueBox.className = 'bg-darkcard border border-darkborder rounded-xl overflow-hidden shadow-sm space-y-0';
 
                 let matchesHTML = '';
                 filteredMatches.forEach(m => {
+                    const isFav = favoriteMatchIds.has(String(m.id));
                     matchesHTML += `
                         <div onclick="openPredictionModal('${m.id}')" class="p-4 border-b border-darkborder/50 hover:bg-darkborder/30 cursor-pointer transition space-y-3">
                             <div class="flex items-center justify-between">
@@ -621,8 +620,8 @@
                                     </div>
                                 </div>
 
-                                <button class="p-1.5 text-gray-500 hover:text-amber-400 transition" onclick="event.stopPropagation()">
-                                    <i data-lucide="star" class="w-4 h-4"></i>
+                                <button class="p-1.5 ${isFav ? 'text-amber-400' : 'text-gray-500 hover:text-amber-400'} transition" onclick="toggleFavorite(event, '${m.id}')">
+                                    <i data-lucide="star" class="w-4 h-4 ${isFav ? 'fill-amber-400' : ''}"></i>
                                 </button>
                             </div>
 
@@ -653,10 +652,29 @@
                 container.appendChild(leagueBox);
             });
 
+            if (totalRenderedMatches === 0) {
+                container.innerHTML = `
+                    <div class="bg-darkcard border border-darkborder rounded-xl p-8 text-center text-gray-400 text-xs space-y-2">
+                        <p class="font-bold text-white">No fixtures found for ${selectedLeague === 'ALL' ? 'selected date' : selectedLeague}</p>
+                        <p class="text-[10px]">Try clearing search or picking another date on calendar.</p>
+                    </div>
+                `;
+            }
+
             const liveBadge = document.getElementById('liveCount');
             if (liveBadge) liveBadge.innerText = totalLiveCount;
 
             if (window.lucide) lucide.createIcons();
+        }
+
+        function toggleFavorite(event, matchId) {
+            event.stopPropagation();
+            if (favoriteMatchIds.has(String(matchId))) {
+                favoriteMatchIds.delete(String(matchId));
+            } else {
+                favoriteMatchIds.add(String(matchId));
+            }
+            renderMatches();
         }
 
         // 5. VIP Single-Pick Engine Powered by Real Match Data
@@ -948,7 +966,7 @@
                 btn.onclick = () => {
                     selectedLeague = lg;
                     renderLeaguePills();
-                    renderMatches();
+                    fetchLiveFootballData();
                 };
                 container.appendChild(btn);
             });
