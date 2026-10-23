@@ -108,7 +108,7 @@
                 <i data-lucide="external-link" class="w-4 h-4"></i>
                 <span>Open Exness Partner Portal</span>
             </a>
-            <p class="text-[10px] text-gray-500 text-center">Goal Platform v9.5</p>
+            <p class="text-[10px] text-gray-500 text-center">Goal Platform v10.0</p>
         </div>
     </aside>
 
@@ -164,23 +164,19 @@
             <!-- Dynamically populated via JS -->
         </div>
 
-        <!-- Continuous Calendar Navigation Bar -->
-        <div class="bg-darkcard border border-darkborder rounded-xl p-2 flex items-center justify-between text-xs font-medium">
-            <button onclick="navigateDate(-1)" class="p-1.5 hover:bg-darkborder rounded-lg text-gray-400 transition">
-                <i data-lucide="chevron-left" class="w-5 h-5"></i>
-            </button>
-
-            <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar" id="calendarDates">
-                <!-- Dynamically populated dates -->
-            </div>
-
-            <div class="flex items-center space-x-1">
-                <button onclick="navigateDate(1)" class="p-1.5 hover:bg-darkborder rounded-lg text-gray-400 transition">
-                    <i data-lucide="chevron-right" class="w-5 h-5"></i>
+        <!-- VIP-Style Fast Calendar Toolbar for Dashboard -->
+        <div class="flex items-center justify-between bg-darkcard border border-darkborder p-2.5 rounded-xl text-xs font-medium">
+            <span class="text-gray-400 font-bold uppercase tracking-wider text-[10px]">MATCH DATE:</span>
+            <div class="flex items-center space-x-2">
+                <button onclick="navigateDate(-1)" class="p-1.5 hover:bg-darkborder rounded-lg text-gray-300 transition">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
                 </button>
-                <input type="date" id="datePicker" onchange="selectCustomDate(this.value)" class="hidden">
-                <button onclick="document.getElementById('datePicker').showPicker()" class="p-1.5 bg-darkborder/60 hover:bg-darkborder rounded-lg text-gray-300 transition">
-                    <i data-lucide="calendar" class="w-4 h-4"></i>
+
+                <!-- Native Fast Date Picker -->
+                <input type="date" id="dashCalendarPicker" onchange="selectCustomDate(this.value)" class="bg-darkbg border border-darkborder text-emerald-400 font-mono font-bold text-xs rounded-lg px-2.5 py-1 focus:outline-none cursor-pointer">
+
+                <button onclick="navigateDate(1)" class="p-1.5 hover:bg-darkborder rounded-lg text-gray-300 transition">
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
                 </button>
             </div>
         </div>
@@ -201,7 +197,7 @@
                         <i data-lucide="crown" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h2 class="text-base font-black text-white uppercase tracking-wider">VIP TICKET ENGINE</h2>
+                        <h2 class="text-base font-black text-white uppercase tracking-wider">VIP TICKETS</h2>
                         <p class="text-xs text-gray-400">Real Fixture Single Picks (Odd 5, 10, 20 & 50)</p>
                     </div>
                 </div>
@@ -375,8 +371,7 @@
 
     <!-- JAVASCRIPT ENGINE -->
     <script>
-        let todayDate = new Date(); // Anchor today
-        let selectedDate = new Date(); // Current chosen calendar date
+        let selectedDate = new Date();
         let vipDate = new Date();
         let selectedVipTier = '10'; // Options: '5', '10', '20', '50'
         let showOnlyLive = false;
@@ -447,33 +442,43 @@
             };
         }
 
-        // 3. Robust Fixture & AI Fetcher for Dashboard
+        // 3. Fast Network-Optimized Fixture Fetcher
         async function fetchLiveFootballData() {
             const container = document.getElementById('matchesList');
+            const datePicker = document.getElementById('dashCalendarPicker');
+            const dateStr = selectedDate.toISOString().split('T')[0];
+            
+            if (datePicker) datePicker.value = dateStr;
+
             if (container) {
                 container.innerHTML = `
-                    <div class="flex flex-col items-center justify-center py-12 text-gray-400 space-y-3">
-                        <div class="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+                    <div class="flex flex-col items-center justify-center py-10 text-gray-400 space-y-3">
+                        <div class="w-7 h-7 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
                         <p class="text-xs font-mono">Loading live fixtures...</p>
                     </div>
                 `;
             }
 
-            const dateStr = selectedDate.toISOString().split('T')[0];
             let events = [];
 
             if (apiCache[dateStr]) {
                 events = apiCache[dateStr];
             } else {
                 try {
-                    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard?dates=${dateStr.replace(/-/g, '')}`);
+                    // Strict 2.5s network timeout for maximum UI responsiveness
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+                    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard?dates=${dateStr.replace(/-/g, '')}`, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+
                     if (res.ok) {
                         const data = await res.json();
                         events = data.events || [];
                         apiCache[dateStr] = events;
                     }
                 } catch (err) {
-                    console.warn("API Error, utilizing backup schedule stream");
+                    console.warn("Fast fallback triggered for fixture stream");
                 }
             }
 
@@ -528,7 +533,7 @@
                 });
             }
 
-            // Fallback / Rich Match Generator if ESPN list is empty or specific date clicked
+            // High-Performance Fallback Generator for Sparse Dates
             if (Object.keys(leaguesMap).length === 0 || selectedLeague !== 'ALL') {
                 const fallbackLeagues = [
                     { league: "Premier League", matches: [ {h: "Arsenal", a: "Everton"}, {h: "Aston Villa", a: "Manchester City"}, {h: "Chelsea", a: "Tottenham Hotspur"}, {h: "Coventry City", a: "Fulham"} ] },
@@ -840,14 +845,19 @@
                 events = apiCache[dateStr];
             } else {
                 try {
-                    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard?dates=${dateStr.replace(/-/g, '')}`);
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+                    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard?dates=${dateStr.replace(/-/g, '')}`, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+
                     if (res.ok) {
                         const data = await res.json();
                         events = data.events || [];
                         apiCache[dateStr] = events;
                     }
                 } catch (err) {
-                    console.warn("API Error");
+                    console.warn("API Fast Failover");
                 }
             }
 
@@ -973,64 +983,14 @@
             });
         }
 
-        // Calendar Date Pill Renderer with Fixed Click Handlers
-        function renderCalendar() {
-            const container = document.getElementById('calendarDates');
-            if (!container) return;
-
-            container.innerHTML = '';
-
-            const todayStr = todayDate.toISOString().split('T')[0];
-            const selectedStr = selectedDate.toISOString().split('T')[0];
-
-            for (let i = -2; i <= 2; i++) {
-                const targetDate = new Date(selectedDate);
-                targetDate.setDate(selectedDate.getDate() + i);
-
-                const targetStr = targetDate.toISOString().split('T')[0];
-                const isSelected = targetStr === selectedStr;
-                
-                let label = '';
-                if (targetStr === todayStr) {
-                    label = 'TODAY';
-                } else {
-                    const diffDays = Math.round((targetDate - todayDate) / (1000 * 60 * 60 * 24));
-                    if (diffDays === -1) label = 'YESTERDAY';
-                    else if (diffDays === 1) label = 'TOMORROW';
-                    else label = targetDate.toLocaleDateString('en-US', { weekday: 'short' });
-                }
-
-                const dayNum = targetDate.getDate();
-
-                const btn = document.createElement('button');
-                btn.className = `px-3.5 py-1.5 rounded-lg text-xs font-semibold flex flex-col items-center min-w-[64px] transition cursor-pointer ${isSelected ? 'bg-emerald-500 text-darkbg font-extrabold shadow-md' : 'hover:bg-darkborder text-gray-400'}`;
-                
-                // Store actual date copy in closure
-                const dateCopy = new Date(targetDate);
-                btn.onclick = () => {
-                    selectedDate = new Date(dateCopy);
-                    renderCalendar();
-                    fetchLiveFootballData();
-                };
-
-                btn.innerHTML = `
-                    <span class="text-[9px] uppercase tracking-wider">${label}</span>
-                    <span class="text-sm font-bold">${dayNum}</span>
-                `;
-                container.appendChild(btn);
-            }
-        }
-
         function navigateDate(days) {
             selectedDate.setDate(selectedDate.getDate() + days);
-            renderCalendar();
             fetchLiveFootballData();
         }
 
         function selectCustomDate(val) {
             if (val) {
                 selectedDate = new Date(val);
-                renderCalendar();
                 fetchLiveFootballData();
             }
         }
@@ -1117,7 +1077,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             renderLeaguePills();
-            renderCalendar();
             fetchLiveFootballData();
         });
     </script>
